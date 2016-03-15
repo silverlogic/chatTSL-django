@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'avatar',
     'easy_thumbnails',
+    'django_jinja',
 
     # Apps
     'apps.base',
@@ -64,6 +65,14 @@ MIDDLEWARE_CLASSES = [
 ]
 
 TEMPLATES = [
+    {
+        "BACKEND": "django_jinja.backend.Jinja2",
+        'DIRS': [str(APPS_DIR / 'templates')],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "match_extension": ".jinja",
+        }
+    },
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [str(APPS_DIR / 'templates')],
