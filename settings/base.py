@@ -17,7 +17,7 @@ APPS_DIR = BASE_DIR / 'apps'
 ALLOWED_HOSTS = ['*']  # Host checking done by web server.
 ROOT_URLCONF = 'apps.urls'
 WSGI_APPLICATION = 'apps.wsgi.application'
-AUTH_USER_MODEL = 'apps.users.User'
+AUTH_USER_MODEL = 'users.User'
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
 ]
@@ -38,10 +38,7 @@ INSTALLED_APPS = [
     # Third party
     'rest_framework',
     'rest_framework.authtoken',
-    'storages',
-    's3_folder_storage',
     'djmail',
-    'django_ses',
     'corsheaders',
     'avatar',
     'easy_thumbnails',
@@ -151,6 +148,7 @@ AVATAR_STORAGE_DIR = 'user-avatars'
 AVATAR_MAX_AVATARS_PER_USER = 1
 
 # Celery
+# http://docs.celeryproject.org/en/latest/configuration.html
 BROKER_URL = env('CELERY_BROKER_URL')
 CELERY_QUEUES = (
     Queue('default', Exchange('default'), routing_key='default'),
