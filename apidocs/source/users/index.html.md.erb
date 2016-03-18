@@ -1,0 +1,35 @@
+---
+title: Users
+---
+
+# Users
+
+* TOC
+{:toc}
+
+
+## Object
+
+Name | Type | Description
+---- | ---- | -----------
+`id` | `int` | unique identifier
+`email` | `string`
+`is_email_confirmed` | `bool`
+`new_email` | `string` | Used for [changing email](/users/change-email)
+`is_new_email_confirmed` | `bool` |
+
+<%= json :user %>
+
+## Retrieve Self
+
+    GET /todo/
+
+
+## Update Self
+
+    PUT /todo/
+
+^
+    PATCH /todo/
+
+[//]: # vim: set ft=markdown:
