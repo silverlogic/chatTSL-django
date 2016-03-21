@@ -20,6 +20,25 @@ Name | Type | Description
 
 <%= json :user %>
 
+## Register (create)
+
+Register a new user.  Returns the user object.
+
+    POST /register
+
+### Input
+
+Name | Type | Description
+---- | ---- | -----------
+`email` | `string`
+`password` | `string`
+
+
+### Output
+
+<%= json :user %>
+
+
 ## Retrieve Self
 
     GET /todo/

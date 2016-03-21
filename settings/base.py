@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_jinja',
 
     # Apps
+    'apps.api',
     'apps.base',
     'apps.users',
 ]
@@ -139,7 +140,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
-    )
+    ),
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
 # Avatars
