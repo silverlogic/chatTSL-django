@@ -39,16 +39,24 @@ Name | Type | Description
 <%= json :user %>
 
 
-## Retrieve Self
+## Me
 
-    GET /todo/
+Get the currently logged in user.
 
+    GET /users/me
 
-## Update Self
+## Change Password
 
-    PUT /todo/
+Change the password of the currently logged in user.
 
-^
-    PATCH /todo/
+    POST /users/change-password
+
+### Input
+
+Name | Type | Description
+---- | ---- | -----------
+`current_password` | `string`
+`new_password` | `string`
+
 
 [//]: # vim: set ft=markdown:
