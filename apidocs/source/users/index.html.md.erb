@@ -39,6 +39,24 @@ Name | Type | Description
 <%= json :user %>
 
 
+## Login
+
+Retrieve an auth token for the specified user.  See [Authentication](/authentication) for how to use it.
+
+    POST /login
+
+### Input
+
+Name | Type | Description
+---- | ---- | -----------
+`email` | `string`
+`password` | `string`
+
+### Output
+
+<%= json :auth_token %>
+
+
 ## Me
 
 Get the currently logged in user.
