@@ -27,7 +27,7 @@ STATIC_S3_PATH = 'static'
 STATIC_URL = 'https://{}.s3.amazonaws.com/{}/'.format(AWS_STORAGE_BUCKET_NAME, STATIC_S3_PATH)
 DEFAULT_FILE_STORAGE = 's3_folder_storage.s3.DefaultStorage'
 DEFAULT_S3_PATH = 'media'
-MEDIA_URL = 'https://{}.s3.amazonaws.com/{}/' % AWS_STORAGE_BUCKET_NAME
+MEDIA_URL = 'https://{}.s3.amazonaws.com/{}/'.format(AWS_STORAGE_BUCKET_NAME, DEFAULT_S3_PATH)
 INSTALLED_APPS += ['storages', 's3_folder_storage']
 
 # Sentry (raven) error logging
