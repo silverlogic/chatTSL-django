@@ -6,7 +6,10 @@ django-model-utils==2.4
 django-cors-headers==1.1.0
 django-avatar==3.0.0
 django-jinja==2.1.2
+django-filter==0.13.0
+django-crispy-forms==1.6.0
 easy-thumbnails==2.3
+
 
 # sending emails
 djmail==0.12.0.post1

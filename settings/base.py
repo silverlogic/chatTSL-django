@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'avatar',
     'easy_thumbnails',
     'django_jinja',
+    'crispy_forms',
 
     # Apps
     'apps.api',
