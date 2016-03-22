@@ -2,10 +2,13 @@ ul li {
   list-style-type: circle;
 }
 
-#markdown-toc {
+#toctitle {
+    display: none
+}
+#toc ul, #markdown-toc {
   margin: 1em 1.5em 2em;
 }
-#markdown-toc li {
+#toc li, #markdown-toc li {
   list-style-type: lower-roman;
 }
 
@@ -72,3 +75,22 @@ th, td {
   position: relative;
 }
 
+table {
+    p {
+        margin: 0;
+    }
+    code {
+        border: 0;
+        background: none;
+        padding: 0;
+    }
+    ul {
+        margin-top: 5px;
+        padding-left: 20px;
+
+    }
+}
+
+.tableblock {
+    margin: 0;
+}
