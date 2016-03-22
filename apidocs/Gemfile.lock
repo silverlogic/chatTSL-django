@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/middleman/middleman-asciidoc.git
+  revision: b4bdac87705684cee2d5fab29f20b39f112c0f22
+  specs:
+    middleman-asciidoc (1.0.0.dev)
+      asciidoctor (>= 1.5.0)
+      middleman-core (~> 4.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -8,6 +16,7 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.3.8)
+    asciidoctor (1.5.4)
     backports (3.6.8)
     capybara (2.5.0)
       mime-types (>= 1.16)
@@ -143,9 +152,13 @@ PLATFORMS
 
 DEPENDENCIES
   middleman (>= 4.0.0)
+  middleman-asciidoc!
   middleman-compass (>= 4.0.0)
   middleman-livereload
   middleman-syntax (~> 2.1.0)
   therubyracer
   tzinfo-data
   wdm (~> 0.1.0)
+
+BUNDLED WITH
+   1.11.2

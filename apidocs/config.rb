@@ -21,9 +21,11 @@ page '/*.txt', layout: false
 set :css_dir, 'static/stylesheets'
 set :js_dir, 'static/javascripts'
 set :images_dir, 'static/images'
+set :fonts_dir, 'static/fonts'
 
 activate :syntax
 activate :directory_indexes
+activate :asciidoc, :asciidoc_attributes => %w(showtitle= idprefix= toc= toclevels=1)
 
 set :markdown_engine, :kramdown
 set :markdown, :toc_levels => [2]

@@ -16,3 +16,4 @@ gem 'middleman', '>= 4.0.0'
 gem 'middleman-livereload'
 gem 'middleman-compass', '>= 4.0.0'
 gem "middleman-syntax", "~>2.1.0"
+gem 'middleman-asciidoc', github: 'middleman/middleman-asciidoc'
