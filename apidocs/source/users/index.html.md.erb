@@ -30,8 +30,8 @@ Register a new user.  Returns the user object.
 
 Name | Type | Description
 ---- | ---- | -----------
-`email` | `string`
-`password` | `string`
+`email` | `string` | **Required**
+`password` | `string` |  **Required**
 
 
 ### Output
@@ -49,8 +49,8 @@ Retrieve an auth token for the specified user.  See [Authentication](/authentica
 
 Name | Type | Description
 ---- | ---- | -----------
-`email` | `string`
-`password` | `string`
+`email` | `string` | **Required**
+`password` | `string` | **Required**
 
 ### Output
 
@@ -73,8 +73,8 @@ Change the password of the currently logged in user.
 
 Name | Type | Description
 ---- | ---- | -----------
-`current_password` | `string`
-`new_password` | `string`
+`current_password` | `string` **Required**
+`new_password` | `string`  **Required**
 
 
 [//]: # vim: set ft=markdown:
