@@ -1,4 +1,7 @@
+from django.db import models
 from rest_framework.serializers import ModelSerializer as OrigModelSerializer
+
+from .fields import ThumbnailImageField
 
 
 class ModelSerializer(OrigModelSerializer):
@@ -11,3 +14,6 @@ class ModelSerializer(OrigModelSerializer):
             'view_name': '{model_name}s-detail'.format(model_name=model_class._meta.object_name.lower())
         }
         return field_class, field_kwargs
+
+
+ModelSerializer.serializer_field_mapping[models.ImageField] = ThumbnailImageField
