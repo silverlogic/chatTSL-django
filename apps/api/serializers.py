@@ -1,4 +1,5 @@
 from django.db import models
+
 from rest_framework.serializers import ModelSerializer as OrigModelSerializer
 
 from .fields import ThumbnailImageField
