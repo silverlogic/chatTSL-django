@@ -69,7 +69,7 @@ TEMPLATES = [
         'DIRS': [str(APPS_DIR / 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
-            "match_extension": ".jinja",
+            "match_extension": ".j2",
         }
     },
     {
