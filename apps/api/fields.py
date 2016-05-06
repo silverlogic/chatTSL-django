@@ -1,7 +1,12 @@
 from drf_extra_fields.fields import Base64ImageField
+from easy_thumbnails.files import get_thumbnailer
 
 
 class ThumbnailImageField(Base64ImageField):
+    def __init__(self, *args, **kwargs):
+        self.sizes = kwargs.pop('sizes', None)
+        super(ThumbnailImageField, self).__init__(*args, **kwargs)
+
     def to_representation(self, value):
         if not value:
             return None
@@ -14,6 +19,15 @@ class ThumbnailImageField(Base64ImageField):
         if request is not None:
             url = request.build_absolute_uri(url)
 
-        return {
+        sizes = {
             'full_size': url
         }
+
+        thumbnailer = get_thumbnailer(value)
+        for name, size in self.sizes.items():
+            url = thumbnailer.get_thumbnail({'size': size}).url
+            if request is not None:
+                url = request.build_absolute_uri(url)
+            sizes[name] = url
+
+        return sizes
