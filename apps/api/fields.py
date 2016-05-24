@@ -4,7 +4,7 @@ from easy_thumbnails.files import get_thumbnailer
 
 class ThumbnailImageField(Base64ImageField):
     def __init__(self, *args, **kwargs):
-        self.sizes = kwargs.pop('sizes', None)
+        self.sizes = kwargs.pop('sizes', {})
         super(ThumbnailImageField, self).__init__(*args, **kwargs)
 
     def to_representation(self, value):
