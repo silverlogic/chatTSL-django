@@ -69,7 +69,7 @@ MIDDLEWARE_CLASSES = [
 
 TEMPLATES = [
     {
-        "BACKEND": 'django_jinja.backend.Jinja2',
+        'BACKEND': 'django_jinja.backend.Jinja2',
         'DIRS': [str(APPS_DIR / 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
