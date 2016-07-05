@@ -3,9 +3,6 @@ from .base import *  # noqa
 DEBUG = False
 SECRET_KEY = env('SECRET_KEY')
 
-# Sites
-URL = env('URL')
-
 # Email
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 EMAIL_BACKEND = 'djmail.backends.celery.EmailBackend'

@@ -22,6 +22,10 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
 ]
 
+# Sites
+URL = env('URL')
+FRONT_URL = env('FRONT_URL')
+
 # Mail
 EMAIL_BACKEND = 'djmail.backends.default.EmailBackend'
 DJMAIL_MAX_RETRY_NUMBER = 3
@@ -65,11 +69,11 @@ MIDDLEWARE_CLASSES = [
 
 TEMPLATES = [
     {
-        "BACKEND": "django_jinja.backend.Jinja2",
+        "BACKEND": 'django_jinja.backend.Jinja2',
         'DIRS': [str(APPS_DIR / 'templates')],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "match_extension": ".j2",
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'match_extension': '.j2',
         }
     },
     {
