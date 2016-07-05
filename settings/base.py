@@ -167,5 +167,6 @@ CELERY_QUEUES = (
 CELERY_DEFAULT_QUEUE = 'default'
 CELERY_DEFAULT_EXCHANGE_TYPE = 'direct'
 CELERY_DEFAULT_ROUTING_KEY = 'default'
+CELERY_TASK_SERIALIZER = 'pickle'  # this is default but required because of a bug in djmail https://github.com/bameda/djmail/issues/36
 CELERYBEAT_SCHEDULE = {
 }
