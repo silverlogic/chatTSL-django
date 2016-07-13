@@ -17,6 +17,7 @@ Name | Type | Description
 `is_email_confirmed` | `bool`
 `new_email` | `string` | Used for [changing email](/users/change-email)
 `is_new_email_confirmed` | `bool` |
+`avatar` | `image` | Sizes: `full_size(1024x1024)`, `small(64x64)`
 
 <%= json :user %>
 
@@ -88,6 +89,7 @@ Update a user.
 
 Name | Type | Description
 ---- | ---- | -----------
+`avatar` | `image` |
 
 
 [//]: # vim: set ft=markdown:

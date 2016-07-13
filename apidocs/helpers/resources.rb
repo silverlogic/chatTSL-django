@@ -60,6 +60,10 @@ module Resources
     is_email_confirmed: false,
     new_email: '',
     is_new_email_confirmed: false,
+    avatar: {
+        full_size: 'https://www.image.com/1.png',
+        small: 'https://www.image.com/2.png'
+    }
   }
 
 end
