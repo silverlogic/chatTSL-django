@@ -11,7 +11,7 @@ django-crispy-forms==1.6.0
 easy-thumbnails==2.3
 
 # sending emails
-djmail==0.12.0.post1
+djmail==0.13.0
 
 # Django REST Framework
 djangorestframework==3.4.0
