@@ -15,7 +15,7 @@ easy-thumbnails==2.3
 djmail==0.12.0.post1
 
 # Django REST Framework
-djangorestframework==3.3.3
+djangorestframework==3.4.0
 git+https://github.com/silverlogic/drf-extra-fields.git@c5845d4de9873950d65bad3f487a6dc62f544e08
 
 # runs the app server
