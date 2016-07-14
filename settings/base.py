@@ -161,7 +161,7 @@ REST_FRAMEWORK = {
 AVATAR_GRAVATAR_DEFAULT = 'retro'
 AVATAR_STORAGE_DIR = 'user-avatars'
 AVATAR_MAX_AVATARS_PER_USER = 1
-AVATAR_AUTO_GENERATE_SIZES = []
+AVATAR_AUTO_GENERATE_SIZES = [1024, 64]
 
 # Celery
 # http://docs.celeryproject.org/en/latest/configuration.html
