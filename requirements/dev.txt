@@ -7,10 +7,12 @@ isort==4.2.2
 pytest==2.8.7
 pytest-cov==2.2.1
 pytest-django==2.9.1
-dj-inmemorystorage==1.4.0
 
 # test factories
 factory-boy==2.6.1
 
 # prettier python prompt / manage.py shell
 ipython==5.0.0
+
+# helpers
+dj-inmemorystorage==1.4.0
