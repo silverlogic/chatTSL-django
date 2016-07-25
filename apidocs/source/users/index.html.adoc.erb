@@ -25,7 +25,7 @@ Properties marked `Private` are only visible when the user is your own.
 ++++
 
 
-== Register (create)
+== Create (register)
 
 Register a new user.  Returns the user object.
 
@@ -49,6 +49,36 @@ POST /register
 ++++
 <%= json :user %>
 ++++
+
+
+== Retrieve
+
+Retrieve a user.
+
+[source]
+----
+GET /users/:id
+----
+
+
+== Update
+
+Update a user.
+
+[source]
+----
+PATCH /users/:id
+PUT /users/:id
+----
+
+=== Input
+
+[cols="2,1,5"]
+|===
+|Name |Type |Description
+
+|`avatar` | `image` |
+|===
 
 
 == Login
@@ -104,26 +134,6 @@ POST /users/change-password
 
 |`current_password` | `string` | **Required**
 |`new_password` | `string` | **Required**
-|===
-
-
-== Update
-
-Update a user.
-
-[source]
-----
-PATCH /users/:id
-PUT /users/:id
-----
-
-=== Input
-
-[cols="2,1,5"]
-|===
-|Name |Type |Description
-
-|`avatar` | `image` |
 |===
 
 
