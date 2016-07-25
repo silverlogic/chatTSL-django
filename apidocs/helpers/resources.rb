@@ -63,7 +63,9 @@ module Resources
     avatar: {
         full_size: 'https://www.image.com/1.png',
         small: 'https://www.image.com/2.png'
-    }
+    },
+    first_name: 'John',
+    last_name: 'Smith'
   }
 
 end
