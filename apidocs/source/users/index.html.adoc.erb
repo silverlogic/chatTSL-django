@@ -1,0 +1,130 @@
+---
+title: Users
+---
+
+= Users
+
+== Object
+
+Properties marked `Private` are only visible when the user is your own.
+
+[cols="2,1,5"]
+|===
+|Name |Type |Description
+
+|`id` | `int` | unique identifier
+|`email` | `string` | **Private**
+|`is_email_confirmed` | `bool` | **Private**
+|`new_email` | `string` | **Private** Used for link:/users/change-email[changing email].
+|`is_new_email_confirmed` | `bool` | **Private**
+|`avatar` | `image` | Sizes: `full_size(1024x1024)`, `small(64x64)`
+|===
+
+++++
+<%= json :user %>
+++++
+
+
+== Register (create)
+
+Register a new user.  Returns the user object.
+
+[source]
+----
+POST /register
+----
+
+=== Input
+
+[cols="2,1,5"]
+|===
+|Name |Type |Description
+
+|`email` | `string` | **Required**
+|`password` | `string` |  **Required**
+|===
+
+=== Output
+
+++++
+<%= json :user %>
+++++
+
+
+== Login
+
+Retrieve an auth token for the specified user.  See [Authentication](/authentication) for how to use it.
+
+[source]
+----
+POST /login
+----
+
+=== Input
+
+[cols="2,1,5"]
+|===
+|Name |Type |Description
+
+|`email` | `string` | **Required**
+|`password` | `string` | **Required**
+|===
+
+=== Output
+
+++++
+<%= json :auth_token %>
+++++
+
+
+== Me
+
+Get the currently logged in user.
+
+[source]
+----
+GET /users/me
+----
+
+
+== Change Password
+
+Change the password of the currently logged in user.
+
+[source]
+----
+POST /users/change-password
+----
+
+=== Input
+
+[cols="2,1,5"]
+|===
+|Name |Type |Description
+
+|`current_password` | `string` | **Required**
+|`new_password` | `string` | **Required**
+|===
+
+
+== Update
+
+Update a user.
+
+[source]
+----
+PATCH /users/:id
+PUT /users/:id
+----
+
+=== Input
+
+[cols="2,1,5"]
+|===
+|Name |Type |Description
+
+|`avatar` | `image` |
+|===
+
+
+// vim: set ft=asciidoc:
