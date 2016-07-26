@@ -18,6 +18,9 @@ djangorestframework==3.4.0
 djangorestframework-expander==0.1.3
 git+https://github.com/silverlogic/drf-extra-fields.git@c5845d4de9873950d65bad3f487a6dc62f544e08
 
+# social login
+python-social-auth==0.2.19
+
 # runs the app server
 gunicorn==19.6.0
 
