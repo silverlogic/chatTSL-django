@@ -160,6 +160,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 30,
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
     'ORDERING_PARAM': 'order_by',
+    'SEARCH_PARAM': 'q',
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
