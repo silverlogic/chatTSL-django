@@ -1,15 +1,19 @@
+from django.utils.translation import ugettext_lazy as _
+
 import requests
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from social.apps.django_app.utils import load_strategy, load_backend
+from social.apps.django_app.utils import load_backend, load_strategy
 from social.exceptions import MissingBackend
 
-from apps.users.pipeline import EmailNotProvidedError, EmailAlreadyExistsError
+from apps.referrals.utils import get_user_from_referral_code
+from apps.users.pipeline import EmailAlreadyExistsError, EmailNotProvidedError
 
 
 class SocialAuthSerializer(serializers.Serializer):
     provider = serializers.CharField()
     access_token = serializers.CharField()
+    referral_code = serializers.CharField(required=False, allow_blank=True)
 
     def validate_provider(self, provider):
         strategy = load_strategy(self.context['request'])
@@ -18,6 +22,12 @@ class SocialAuthSerializer(serializers.Serializer):
             return load_backend(strategy, provider, redirect_uri=None)
         except MissingBackend:
             raise serializers.ValidationError('Invalid provider.')
+
+    def validate_referral_code(self, referral_code):
+        referrer = get_user_from_referral_code(referral_code)
+        if not referrer:
+            raise serializers.ValidationError(_('Invalid referral code.'))
+        return referral_code
 
     def create(self, validated_data):
         try:
