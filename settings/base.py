@@ -55,10 +55,13 @@ INSTALLED_APPS = [
     'crispy_forms',
     'social.apps.django_app.default',
 
-    # Apps
+    # Base
     'apps.api',
     'apps.base',
+    'apps.referrals',
     'apps.users',
+
+    # Project
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -221,8 +224,8 @@ SOCIAL_AUTH_PIPELINE = [
     # Update the user record with any changed info from the auth service.
     'social.pipeline.user.user_details',
 
-    # Set avatar if available.
     'apps.users.pipeline.set_avatar',
+    'apps.referrals.pipeline.link_user_to_referrer',
 ]
 SOCIAL_AUTH_USER_FIELDS = ['username', 'first_name', 'last_name']
 

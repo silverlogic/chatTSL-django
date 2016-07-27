@@ -21,6 +21,9 @@ git+https://github.com/silverlogic/drf-extra-fields.git@c5845d4de9873950d65bad3f
 # social login
 python-social-auth==0.2.19
 
+# unique id generator
+hashids==1.1.0
+
 # runs the app server
 gunicorn==19.6.0
 

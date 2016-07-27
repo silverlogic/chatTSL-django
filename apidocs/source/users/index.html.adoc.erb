@@ -44,6 +44,7 @@ POST /register
 
 |`email` | `string` | **Required**
 |`password` | `string` |  **Required**
+|`referral_code` | `string` |
 |===
 
 === Output
@@ -148,6 +149,7 @@ POST /social-auth/
 |`provider` | `string` | **Required** Possible values: `facebook`.
 |`access_token` | `string` | **Required**
 |`email` | `string` | Used when the social auth provider does not give us an email address. See the errors section below.
+|`referral_code` | `string` |
 |===
 
 === Output
