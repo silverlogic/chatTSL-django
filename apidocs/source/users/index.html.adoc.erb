@@ -17,6 +17,7 @@ Properties marked `Private` are only visible when the user is your own.
 |`is_email_confirmed` | `bool` | **Private**
 |`new_email` | `string` | **Private** Used for link:/users/change-email[changing email].
 |`is_new_email_confirmed` | `bool` | **Private**
+|`referral_code` | `string` | **Private**  Code to give to users to refer them.
 |`avatar` | `image` | Sizes: `full_size(1024x1024)`, `small(64x64)`
 |`first_name` | `string` |
 |`last_name` | `string` |
@@ -44,7 +45,7 @@ POST /register
 
 |`email` | `string` | **Required**
 |`password` | `string` |  **Required**
-|`referral_code` | `string` |
+|`referral_code` | `string` | Referral code of the person that referred the user.
 |===
 
 === Output
@@ -149,7 +150,7 @@ POST /social-auth/
 |`provider` | `string` | **Required** Possible values: `facebook`.
 |`access_token` | `string` | **Required**
 |`email` | `string` | Used when the social auth provider does not give us an email address. See the errors section below.
-|`referral_code` | `string` |
+|`referral_code` | `string` | Referral code of the person that referred the user.
 |===
 
 === Output
