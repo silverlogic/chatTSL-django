@@ -23,3 +23,4 @@ class SocialAuthOAuth1Serializer(SocialAuthBaseSerializer):
 
 class SocialAuthOAuth2Serializer(SocialAuthBaseSerializer):
     code = serializers.CharField()
+    redirect_uri = serializers.CharField()
