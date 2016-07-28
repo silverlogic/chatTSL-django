@@ -7,6 +7,7 @@ from apps.referrals.utils import get_user_from_referral_code
 
 class SocialAuthBaseSerializer(serializers.Serializer):
     provider = serializers.CharField()
+    email = serializers.EmailField(required=False, allow_blank=True)
     referral_code = serializers.CharField(required=False, allow_blank=True)
 
     def validate_referral_code(self, referral_code):
