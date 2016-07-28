@@ -1,7 +1,8 @@
 from django.http import Http404
 
 from requests import HTTPError
-from rest_framework import viewsets, serializers
+from rest_framework import serializers, status, viewsets
+from rest_framework.response import Response
 from rest_social_auth.views import SocialTokenOnlyAuthView
 from social.exceptions import AuthException
 
@@ -27,4 +28,4 @@ class SocialAuthViewSet(SocialTokenOnlyAuthView, viewsets.GenericViewSet):
     def respond_error(self, error):
         if isinstance(error, (AuthException, HTTPError)):
             raise serializers.ValidationError({'non_field_errors': 'invalid_credentials'})
-        return super().respond_error(error)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
