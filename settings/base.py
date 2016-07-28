@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'django_jinja',
     'crispy_forms',
     'social.apps.django_app.default',
+    'rest_social_auth',
 
     # Base
     'apps.api',

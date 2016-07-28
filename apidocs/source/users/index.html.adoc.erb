@@ -134,39 +134,8 @@ POST /login
 
 == Social Auth (Register / Login)
 
-Login / register using a social account.
-
-[source]
-----
-POST /social-auth/
-----
-
-=== Input
-
-[cols="2,1,5"]
-|===
-|Name |Type |Description
-
-|`provider` | `string` | **Required** Possible values: `facebook`.
-|`access_token` | `string` | **Required**
-|`email` | `string` | Used when the social auth provider does not give us an email address. See the errors section below.
-|`referral_code` | `string` | Referral code of the person that referred the user.
-|===
-
-=== Output
-
-++++
-<%= json :auth_token %>
-++++
-
-=== Errors
-
-There are 4 possible errors:
-
-* `{"provider": ["Invalid provider"]}` when an invalid provider is given.
-* `{"access_token": "invalid_access_token"}` when an invalid access token is given.
-* `{"email": "no_email_provided"}` when the social provider does not give us an email address and no email is given with the request.  The user should be asked to supply an email address.
-* `{"email": "email_already_in_use"}` when the email given by the social provider is already associated to an account.  Registration cannot continue.
+Login / register using a social account.  As this can be a bit complex, see the
+separate page on it: link:/users/social-auth[Social Auth]
 
 
 == Me

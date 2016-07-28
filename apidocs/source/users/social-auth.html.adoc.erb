@@ -1,0 +1,89 @@
+---
+Title: Social Auth
+---
+
+= Social Auth
+:toclevels: 2
+
+== OAuth1 Provider Flow
+
+For providers that use the OAuth1 protocol such as twitter.
+
+=== Step 1 of 2: Retrieve an OAuth request token
+
+After retrieving an OAuth request token the client will use this
+token to perform authentication against the provider.  The provider
+will return to the client an `oauth token` and an `oauth verifier`.  These
+two values are needed for step 2.
+
+[source]
+----
+POST /social-auth
+----
+
+==== Input
+
+[cols="2,1,5"]
+|===
+|Name |Type |Description
+
+|`provider` | `string` | **Required** Possible values: `twitter`.
+|===
+
+=== Step 2 of 2: Register/Login the user using the OAuth token and verifier.
+
+[source]
+----
+POST /social-auth
+----
+
+==== Input
+
+[cols="2,1,5"]
+|===
+|Name |Type |Description
+
+|`provider` | `string` | **Required** Possible values: `facebook`.
+|`oauth_token` | `string` | **Required**
+|`oauth_verifier` | `string` | **Required**
+|`email` | `string` | Used when the social auth provider does not give us an email address. See the errors section below.
+|`referral_code` | `string` | Referral code of the person that referred the user.
+|===
+
+
+== OAuth2 Provider Flow
+
+For providers that use the OAuth2 protocl such as facebook.
+
+
+=== Step 1 of 1: Register/Login the user using the OAuth code.
+
+==== Input
+
+[cols="2,1,5"]
+|===
+|Name |Type |Description
+
+|`provider` | `string` | **Required** Possible values: `facebook`.
+|`access_token` | `string` | **Required**
+|`email` | `string` | Used when the social auth provider does not give us an email address. See the errors section below.
+|`referral_code` | `string` | Referral code of the person that referred the user.
+|===
+
+== Shared Output
+
+++++
+<%= json :auth_token %>
+++++
+
+== Shared Errors
+
+There are 4 possible errors:
+
+* `{"provider": ["Invalid provider"]}` when an invalid provider is given.
+* `{"non_field_errors": "invalid_credentials"}` when invalid oauth credentials are given.
+* `{"email": "no_email_provided"}` when the social provider does not give us an email address and no email is given with the request.  The user should be asked to supply an email address.
+* `{"email": "email_already_in_use"}` when the email given by the social provider is already associated to an account.  Registration cannot continue.
+
+
+// vim: set ft=asciidoc:
