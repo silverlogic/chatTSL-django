@@ -20,7 +20,7 @@ class SocialAuthViewSet(SocialTokenOnlyAuthView, viewsets.GenericViewSet):
 
     def create(self, request, *args, **kwargs):
         try:
-            return super().post(request, *args, **kwargs)
+            return self.do(request, *args, **kwargs)
         except Http404:
             raise serializers.ValidationError({'provider': ['Invaild provider']})
         except EmailNotProvidedError:
@@ -29,14 +29,14 @@ class SocialAuthViewSet(SocialTokenOnlyAuthView, viewsets.GenericViewSet):
             raise serializers.ValidationError({'email': 'email_already_in_use'})
 
     @method_decorator(never_cache)
-    def post(self, request, *args, **kwargs):
+    def do(self, request, *args, **kwargs):
         input_data = self.get_serializer_in_data()
         provider_name = self.get_provider_name(input_data)
         if not provider_name:
             return self.respond_error("Provider is not specified")
         self.set_input_data(request, input_data)
         decorate_request(request, provider_name)
-        manual_redirect_uri = request.data.get('redirect_uri', None)
+        manual_redirect_uri = input_data.get('redirect_uri', None)
         if manual_redirect_uri:
             self.request.backend.redirect_uri = manual_redirect_uri
         serializer_in = self.get_serializer_in(data=input_data)
