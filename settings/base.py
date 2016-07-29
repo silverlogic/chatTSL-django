@@ -234,6 +234,9 @@ SOCIAL_AUTH_USER_FIELDS = ['username', 'first_name', 'last_name']
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['public_profile', 'email']
 SOCIAL_AUTH_FACEBOOK_KEY = env('SOCIAL_AUTH_FACEBOOK_KEY', required=False)
 SOCIAL_AUTH_FACEBOOK_SECRET = env('SOCIAL_AUTH_FACEBOOK_SECRET', required=False)
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+    'fields': 'id,email,first_name,last_name'
+}
 if SOCIAL_AUTH_FACEBOOK_KEY and SOCIAL_AUTH_FACEBOOK_SECRET:
     AUTHENTICATION_BACKENDS.append('social.backends.facebook.FacebookOAuth2')
 
