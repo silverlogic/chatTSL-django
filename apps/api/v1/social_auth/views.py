@@ -36,7 +36,7 @@ class SocialAuthViewSet(SocialTokenOnlyAuthView, viewsets.GenericViewSet):
             return self.respond_error("Provider is not specified")
         self.set_input_data(request, input_data)
         decorate_request(request, provider_name)
-        manual_redirect_uri = input_data.get('redirect_uri', None)
+        manual_redirect_uri = request.data.get('redirect_uri', None)
         if manual_redirect_uri:
             self.request.backend.redirect_uri = manual_redirect_uri
         serializer_in = self.get_serializer_in(data=input_data)
