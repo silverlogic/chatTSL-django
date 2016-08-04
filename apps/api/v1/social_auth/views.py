@@ -1,14 +1,20 @@
-from django.views.decorators.cache import never_cache
-from django.utils.decorators import method_decorator
+import json
+from urllib.parse import urlparse
+
 from django.http import Http404, HttpResponse
+from django.utils.decorators import method_decorator
+from django.utils.encoding import iri_to_uri
+from django.utils.six.moves.urllib.parse import urljoin
+from django.views.decorators.cache import never_cache
 
 from requests import HTTPError
 from rest_framework import serializers, status, viewsets
 from rest_framework.response import Response
-from rest_social_auth.views import SocialTokenOnlyAuthView, decorate_request
+from rest_social_auth.views import DOMAIN_FROM_ORIGIN, SocialTokenOnlyAuthView, decorate_request
 from social.exceptions import AuthException
-from social.utils import parse_qs
+from social.utils import parse_qs, user_is_authenticated
 
+from apps.social_auth_cache.models import SocialAuthAccessTokenCache
 from apps.users.pipeline import EmailAlreadyExistsError, EmailNotProvidedError
 
 from .serializers import SocialAuthOAuth1Serializer, SocialAuthOAuth2Serializer
@@ -54,6 +60,62 @@ class SocialAuthViewSet(SocialTokenOnlyAuthView, viewsets.GenericViewSet):
         resp_data = self.get_serializer(instance=user)
         self.do_login(request.backend, user)
         return Response(resp_data.data)
+
+    def get_object(self):
+        user = self.request.user
+        manual_redirect_uri = self.request.auth_data.pop('redirect_uri', None)
+        manual_redirect_uri = self.get_redirect_uri(manual_redirect_uri)
+        if manual_redirect_uri:
+            self.request.backend.redirect_uri = manual_redirect_uri
+        elif DOMAIN_FROM_ORIGIN:
+            origin = self.request.strategy.request.META.get('HTTP_ORIGIN')
+            if origin:
+                relative_path = urlparse(self.request.backend.redirect_uri).path
+                url = urlparse(origin)
+                origin_scheme_host = "%s://%s" % (url.scheme, url.netloc)
+                location = urljoin(origin_scheme_host, relative_path)
+                self.request.backend.redirect_uri = iri_to_uri(location)
+        is_authenticated = user_is_authenticated(user)
+        user = is_authenticated and user or None
+        # skip checking state by setting following params to False
+        # it is responsibility of front-end to check state
+        # TODO: maybe create an additional resource, where front-end will
+        # store the state before making a call to oauth provider
+        # so server can save it in session and consequently check it before
+        # sending request to acquire access token.
+        # In case of token authentication we need a way to store an anonymous
+        # session to do it.
+        self.request.backend.REDIRECT_STATE = False
+        self.request.backend.STATE_PARAMETER = False
+
+        # Deal with cached access token.
+        access_token = None
+        oauth_token = self.request.data.get('oauth_token')
+        oauth_verifier = self.request.data.get('oauth_verifier')
+        code = self.request.data.get('code')
+        if oauth_token and oauth_verifier:
+            try:
+                c = SocialAuthAccessTokenCache.objects.get(oauth_token=oauth_token, oauth_verifier=oauth_verifier)
+                access_token = c.access_token
+            except SocialAuthAccessTokenCache.DoesNotExist:
+                pass
+        elif code:
+            try:
+                c = SocialAuthAccessTokenCache.objects.get(code=code)
+                access_token = c.access_token
+            except SocialAuthAccessTokenCache.DoesNotExist:
+                pass
+
+        if access_token:
+            try:
+                access_token = json.loads(access_token)
+            except:
+                pass
+            user = self.request.backend.do_auth(access_token)
+        else:
+            user = self.request.backend.complete(user=user)
+
+        return user
 
     def respond_error(self, error):
         if isinstance(error, (AuthException, HTTPError)):

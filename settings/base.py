@@ -2,6 +2,7 @@
 https://docs.djangoproject.com/en/1.9/ref/settings/
 '''
 import pathlib
+from datetime import timedelta
 
 from django.utils.translation import ugettext_lazy as _
 
@@ -60,6 +61,7 @@ INSTALLED_APPS = [
     'apps.api',
     'apps.base',
     'apps.referrals',
+    'apps.social_auth_cache',
     'apps.users',
 
     # Project
@@ -186,6 +188,10 @@ CELERY_DEFAULT_EXCHANGE_TYPE = 'direct'
 CELERY_DEFAULT_ROUTING_KEY = 'default'
 CELERY_TASK_SERIALIZER = 'pickle'
 CELERYBEAT_SCHEDULE = {
+    'clean-up-social-auth-cache': {
+        'task': 'apps.social_auth_cache.tasks.clean_up_social_auth_cache',
+        'schedule': timedelta(hours=1)
+    }
 }
 
 # Social Auth
@@ -207,6 +213,8 @@ SOCIAL_AUTH_PIPELINE = [
 
     # Checks if the current social-account is already associated in the site.
     'social.pipeline.social_auth.social_user',
+
+    'apps.social_auth_cache.pipeline.cache_access_token',
 
     # Make up a username for this person and ensure it isn't taken.  If it is taken,
     # fail.
