@@ -42,12 +42,12 @@ class SocialAuthViewSet(SocialTokenOnlyAuthView, viewsets.GenericViewSet):
             return self.respond_error("Provider is not specified")
         self.set_input_data(request, input_data)
         decorate_request(request, provider_name)
-        manual_redirect_uri = input_data.get('redirect_uri', None)
-        if manual_redirect_uri:
-            self.request.backend.redirect_uri = manual_redirect_uri
         serializer_in = self.get_serializer_in(data=input_data)
         if self.oauth_v1() and request.backend.OAUTH_TOKEN_PARAMETER_NAME not in input_data:
             # oauth1 first stage (1st is get request_token, 2nd is get access_token)
+            manual_redirect_uri = input_data.get('redirect_uri', None)
+            if manual_redirect_uri:
+                self.request.backend.redirect_uri = manual_redirect_uri
             request_token = parse_qs(request.backend.set_unauthorized_token())
             return Response(request_token)
         serializer_in.is_valid(raise_exception=True)
