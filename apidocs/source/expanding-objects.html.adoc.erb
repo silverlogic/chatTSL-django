@@ -1,0 +1,25 @@
+---
+title: Expanding Objects
+---
+
+= Expanding Objects
+
+Many objects contain the id of another object in their response properties.
+Those objects can be expanded inline with the `expand` request parameter.  Objects
+that can be expanded are noted in this documentation by an **expandable** marker.
+
+You can nest expand requests with a dot. For example, requesting
+`menu.items` on a restaurant will expand the menu property into a full menu
+object, and will then expand the items property on that menu into a full items object.
+You can expand multiple things at once by separating them with a comma.
+
+== Example
+
+++++
+<pre class="terminal">
+$ curl https://api.example.com/v1/restaurants/?expand=menu.items,owner
+</pre>
+++++
+
+
+// vim: set ft=asciidoc:
