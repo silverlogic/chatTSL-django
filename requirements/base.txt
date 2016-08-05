@@ -17,7 +17,8 @@ djmail==0.13.0
 djangorestframework==3.4.0
 djangorestframework-expander==0.2.0
 git+https://github.com/silverlogic/drf-extra-fields.git@c5845d4de9873950d65bad3f487a6dc62f544e08
-rest-social-auth==0.5.0
+git+https://github.com/silverlogic/django-rest-social-auth@master
+# rest-social-auth==0.5.0
 
 # unique id generator
 hashids==1.1.0

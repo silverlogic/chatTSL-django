@@ -19,6 +19,7 @@ class SocialAuthBaseSerializer(serializers.Serializer):
 
 class SocialAuthOAuth1Serializer(SocialAuthBaseSerializer):
     oauth_token = serializers.CharField()
+    oauth_token_secret = serializers.CharField()
     oauth_verifier = serializers.CharField()
 
 

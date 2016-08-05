@@ -14,7 +14,8 @@ For providers that use the OAuth1 protocol such as twitter.
 After retrieving an OAuth request token the client will use this
 token to perform authentication against the provider.  The provider
 will return to the client an `oauth token` and an `oauth verifier`.  These
-two values are needed for step 2.
+two values are needed for step 2.  Also, the `oauth_token_secret` from this
+step is required for step 2.
 
 [source]
 ----
@@ -31,6 +32,16 @@ POST /social-auth
 |`redirect_uri` | `string` | where the user will be sent to after authorizing with the provider.
 |===
 
+==== Output
+
+++++
+<%= json \
+    oauth_token_secret: "cYwcHxWW7OSnqY5W3FTZPvCJQNPfPX4N",
+    oauth_callback_confirmed: "true",
+    oauth_token: "0MxsWgAAAAAAwS-_AAABVld_DHo"
+%>
+++++
+
 === Step 2 of 2: Register/Login the user using the OAuth token and verifier.
 
 [source]
@@ -46,6 +57,7 @@ POST /social-auth
 
 |`provider` | `string` | **Required** Possible values: `facebook`.
 |`oauth_token` | `string` | **Required**
+|`oauth_token_secret` | `string` | **Required**
 |`oauth_verifier` | `string` | **Required**
 |`email` | `string` | Used when the social auth provider does not give us an email address. See the errors section below.
 |`referral_code` | `string` | Referral code of the person that referred the user.
