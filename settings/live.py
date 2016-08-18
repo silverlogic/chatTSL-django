@@ -27,6 +27,9 @@ DEFAULT_S3_PATH = 'media'
 MEDIA_URL = 'https://{}.s3.amazonaws.com/{}/'.format(AWS_STORAGE_BUCKET_NAME, DEFAULT_S3_PATH)
 INSTALLED_APPS += ['storages', 's3_folder_storage']
 
+# Thumbnails
+THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
+
 # Sentry (raven) error logging
 INSTALLED_APPS += ['raven.contrib.django.raven_compat']
 RAVEN_CONFIG = {
