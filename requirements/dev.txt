@@ -19,3 +19,6 @@ dj-inmemorystorage==1.4.0
 
 # fake http requests
 httpretty==0.8.14
+
+# debug helper / performance monitoring
+django-debug-toolbar==1.5
