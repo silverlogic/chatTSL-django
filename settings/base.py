@@ -109,13 +109,11 @@ TEMPLATES = [
     },
 ]
 
-
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 # https://github.com/kennethreitz/dj-database-url#url-schema
 DATABASES = {}
 DATABASES['default'] = dj_database_url.parse(env('DATABASE_URL'))
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
@@ -127,6 +125,9 @@ USE_TZ = True
 LANGUAGES = [
     ('en', _('English')),
 ]
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = None
+DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 
 # For reverse proxying
 USE_X_FORWARDED_HOST = True
