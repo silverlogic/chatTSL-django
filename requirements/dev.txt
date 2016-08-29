@@ -1,7 +1,7 @@
 -r base.txt
 # code style
-flake8==2.5.4
-isort==4.2.2
+flake8==3.0.4
+isort==4.2.5
 
 # testing
 pytest==3.0.1
