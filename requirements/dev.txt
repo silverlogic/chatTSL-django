@@ -12,7 +12,7 @@ pytest-django==3.0.0
 factory-boy==2.7.0
 
 # prettier python prompt / manage.py shell
-ipython==5.0.0
+ipython==5.1.0
 
 # helpers
 dj-inmemorystorage==1.4.0
