@@ -19,11 +19,14 @@ djangorestframework-expander==0.2.1
 git+https://github.com/silverlogic/drf-extra-fields.git@c5845d4de9873950d65bad3f487a6dc62f544e08
 git+https://github.com/silverlogic/django-rest-social-auth@master
 
-# unique id generator
-hashids==1.1.0
+# postgresql driver
+psycopg2==2.6.1
 
 # runs the app server
 gunicorn==19.6.0
 
-# postgresql driver
-psycopg2==2.6.1
+# unique id generator
+hashids==1.1.0
+
+# datetime helpers
+python-dateutil==2.5.3
