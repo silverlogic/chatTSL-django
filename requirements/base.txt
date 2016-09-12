@@ -1,7 +1,7 @@
 celery==3.1.23
 
 Django==1.10.1
-dj-database-url==0.4.0
+dj-database-url==0.4.1
 django-model-utils==2.5.2
 django-cors-headers==1.1.0
 django-avatar==3.1.0
