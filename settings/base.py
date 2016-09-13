@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'social.apps.django_app.default',
     'rest_social_auth',
+    'fsm_admin',
 
     # Base
     'apps.api',

@@ -9,6 +9,8 @@ django-jinja==2.2.1
 django-filter==0.13.0
 django-crispy-forms==1.6.0
 easy-thumbnails==2.3
+django-fsm==2.4.0
+django-fsm-admin==1.2.3
 
 # sending emails
 djmail==0.13.0
