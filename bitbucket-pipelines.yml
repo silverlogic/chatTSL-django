@@ -12,14 +12,14 @@ pipelines:
           - source venv/bin/activate
           - pip install -r requirements/dev.txt
 
+          - flake8
+
           - export SECRET_KEY=notsecret
           - export DATABASE_URL='postgis://pipelines:pipelines@127.0.0.1/baseapp'
           - export CELERY_BROKER_URL="N/A"
           - export URL="http://localhost"
           - export FRONT_URL="http://app.localhost"
           - py.test --junitxml=test-results.xml --cov="apps" tests
-
-          - flake8
 
           - pip install codecov
           - codecov --token="17ec662a-faa2-4c69-b2ba-e272bf81e0a4"
