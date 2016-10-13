@@ -19,6 +19,8 @@ pipelines:
           - export FRONT_URL="http://app.localhost"
           - py.test --junitxml=test-results.xml --cov="apps" tests
 
+          - flake8
+
           - pip install codecov
           - codecov --token="17ec662a-faa2-4c69-b2ba-e272bf81e0a4"
 
