@@ -1,0 +1,27 @@
+image: silverlogic/python-postgresql
+
+pipelines:
+  default:
+    - step:
+        script:
+          - /etc/init.d/postgresql start
+          - sudo -u postgres psql -c "CREATE USER pipelines WITH SUPERUSER LOGIN PASSWORD 'pipelines'"
+          - sudo -u postgres psql -c 'CREATE EXTENSION citext' template1
+          - sudo -u postgres psql -c 'CREATE EXTENSION hstore' template1
+          - pyvenv venv
+          - source venv/bin/activate
+          - pip install -r requirements/dev.txt
+
+          - export SECRET_KEY=notsecret
+          - export DATABASE_URL='postgis://pipelines:pipelines@127.0.0.1/baseapp'
+          - export CELERY_BROKER_URL="N/A"
+          - export URL="http://localhost"
+          - export FRONT_URL="http://app.localhost"
+          - py.test --junitxml=test-results.xml --cov="apps" tests
+
+          - pip install codecov
+          - codecov --token="17ec662a-faa2-4c69-b2ba-e272bf81e0a4"
+
+          - test "$BITBUCKET_BRANCH" = master && curl -XPOST "https://ops.tsl.io/api/17/job/89820c25-bd84-47f6-8fa5-f31bb54d23c2/executions?authtoken=6m5rvQR1JFY8r43WtZkKkvQyKtjQIisl" || true  # Deploy staging api
+          - test "$BITBUCKET_BRANCH" = master && curl -XPOST "https://ops.tsl.io/api/17/job/6e4de337-78b5-4e55-aa03-0194758a67d1/executions?authtoken=6m5rvQR1JFY8r43WtZkKkvQyKtjQIisl" || true  # Deploy staging apidocs
+          - test "$BITBUCKET_BRANCH" = production && curl -XPOST "https://ops.tsl.io/api/17/job/todo/executions?authtoken=6m5rvQR1JFY8r43WtZkKkvQyKtjQIisl" || true  # Deploy production api
