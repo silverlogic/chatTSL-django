@@ -16,7 +16,7 @@ django-fsm-admin==1.2.3
 djmail==0.13.0
 
 # Django REST Framework
-djangorestframework==3.4.6
+djangorestframework==3.4.7
 djangorestframework-expander==0.2.3
 git+https://github.com/silverlogic/drf-extra-fields.git@c5845d4de9873950d65bad3f487a6dc62f544e08
 git+https://github.com/silverlogic/django-rest-social-auth@master
