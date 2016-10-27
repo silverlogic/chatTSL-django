@@ -33,6 +33,7 @@ URL = env('URL')
 FRONT_URL = env('FRONT_URL')
 FRONT_CHANGE_EMAIL_CONFIRM_URL = FRONT_URL + '/change-email/{id}/{token}'
 FRONT_CHANGE_EMAIL_VERIFY_URL = FRONT_URL + '/change-email-verify/{id}/{token}'
+FRONT_CONFIRM_EMAIL_URL = FRONT_URL + '/confirm-email/{id}/{token}'
 
 # Mail
 EMAIL_BACKEND = 'djmail.backends.default.EmailBackend'
