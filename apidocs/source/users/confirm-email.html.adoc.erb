@@ -1,0 +1,26 @@
+---
+title: Confirm Email
+---
+
+== Confirm Email
+
+**Authentication not required**
+
+When a user signs up, the welcome email will have a link to `<front_url>/confirm-email/<id>/<token>`.  Front end react app will make a POST request as documented below.
+
+[source]
+----
+POST /users/:id/confirm-email
+----
+
+=== Input
+
+[cols="2,1,5"]
+|===
+|Name |Type |Description
+
+|`token` | `string` | Token from the URL in the email sent.
+|===
+
+
+// vim: set ft=asciidoc:
