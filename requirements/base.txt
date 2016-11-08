@@ -11,6 +11,7 @@ django-crispy-forms==1.6.1
 easy-thumbnails==2.3
 django-fsm==2.4.0
 django-fsm-admin==1.2.3
+python-social-auth==0.2.21
 
 # sending emails
 djmail==0.13.0
