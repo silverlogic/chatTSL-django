@@ -23,7 +23,7 @@ git+https://github.com/silverlogic/drf-extra-fields.git@c5845d4de9873950d65bad3f
 git+https://github.com/silverlogic/django-rest-social-auth@master
 
 # postgresql driver
-psycopg2==2.6.1
+psycopg2==2.6.2
 
 # runs the app server
 gunicorn==19.6.0
