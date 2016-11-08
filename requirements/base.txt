@@ -7,7 +7,7 @@ django-cors-headers==1.1.0
 django-avatar==3.1.0
 django-jinja==2.2.1
 django-filter==0.15.3
-django-crispy-forms==1.6.0
+django-crispy-forms==1.6.1
 easy-thumbnails==2.3
 django-fsm==2.4.0
 django-fsm-admin==1.2.3
