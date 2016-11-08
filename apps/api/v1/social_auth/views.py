@@ -59,7 +59,9 @@ class SocialAuthViewSet(SocialTokenOnlyAuthView, viewsets.GenericViewSet):
             return user
         resp_data = self.get_serializer(instance=user)
         self.do_login(request.backend, user)
-        return Response(resp_data.data)
+        data = resp_data.data
+        data['is_new'] = user.is_new
+        return Response(data)
 
     def get_object(self):
         user = self.request.user

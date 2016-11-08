@@ -238,6 +238,7 @@ SOCIAL_AUTH_PIPELINE = [
     'social.pipeline.user.user_details',
 
     'apps.users.pipeline.set_avatar',
+    'apps.users.pipeline.set_is_new',
     'apps.referrals.pipeline.link_user_to_referrer',
 ]
 SOCIAL_AUTH_USER_FIELDS = ['username', 'first_name', 'last_name']

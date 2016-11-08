@@ -63,7 +63,6 @@ POST /social-auth
 |`referral_code` | `string` | Referral code of the person that referred the user.
 |===
 
-
 == OAuth2 Provider Flow
 
 For providers that use the OAuth2 protocl such as facebook.
@@ -86,8 +85,15 @@ For providers that use the OAuth2 protocl such as facebook.
 
 == Shared Output
 
+[cols="2,1,5"]
+|===
+|Name |Type |Description
+
+|`token` | `string` | Auth token that is used to login.
+|`is_new` | `boolean` | Whether or not the user is new (just registered) or old (logged in).
+|===
 ++++
-<%= json :auth_token %>
+<%= json :social_auth %>
 ++++
 
 == Shared Errors

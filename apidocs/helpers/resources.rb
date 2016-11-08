@@ -54,6 +54,10 @@ module Resources
     token: "lkja8*lkajsd*lkjas;ldkj8asd;kJASd811"
   }
 
+  SOCIAL_AUTH ||= AUTH_TOKEN.merge({
+      is_new: true
+  })
+
   USER ||= {
     id: 1,
     email: 'john@gmail.com',
