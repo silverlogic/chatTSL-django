@@ -32,4 +32,4 @@ gunicorn==19.6.0
 hashids==1.1.0
 
 # datetime helpers
-python-dateutil==2.5.3
+python-dateutil==2.6.0
