@@ -15,6 +15,7 @@ STATIC_URL = '{url}/static/'.format(url=URL)
 
 # Debug Toolbar
 INSTALLED_APPS += ['debug_toolbar']
+MIDDLEWARE_CLASSES = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE_CLASSES
 DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': 'apps.base.debug_toolbar.show_toolbar'
 }

@@ -11,9 +11,11 @@ urlpatterns = [
 
 
 if settings.DEBUG:
+    import debug_toolbar
     from django.conf.urls.static import static
     from urllib.parse import urlparse
     media_url = urlparse(settings.MEDIA_URL)
     static_url = urlparse(settings.STATIC_URL)
     urlpatterns += static(media_url.path, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(static_url.path, document_root=settings.STATIC_ROOT)
+    urlpatterns += [url(r'^__debug__/', include(debug_toolbar.urls))]
