@@ -55,7 +55,7 @@ POST /social-auth
 |===
 |Name |Type |Description
 
-|`provider` | `string` | **Required** Possible values: `facebook`, `linkedin-oauth2`.
+|`provider` | `string` | **Required** Possible values: `twitter`
 |`oauth_token` | `string` | **Required**
 |`oauth_token_secret` | `string` | **Required**
 |`oauth_verifier` | `string` | **Required**
@@ -76,7 +76,7 @@ For providers that use the OAuth2 protocl such as facebook.
 |===
 |Name |Type |Description
 
-|`provider` | `string` | **Required** Possible values: `facebook`.
+|`provider` | `string` | **Required** Possible values: `facebook`, `linkedin-oauth2`.
 |`code` | `string` | **Required**  OAuth authorization code.
 |`redirect_uri` | `string` | **Required**  Redirect URI the client used for OAuth2 authentication with the provider.
 |`email` | `string` | Used when the social auth provider does not give us an email address. See the errors section below.
