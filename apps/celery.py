@@ -18,7 +18,7 @@ class Celery(celery.Celery):
 
 
 app = Celery('apps')
-app.config_from_object('django.conf:settings')
+app.config_from_object('django.conf:settings', namespace='CELERY')
 
 # re.sub to remove the `.apps.XConfig` from app entries.
 app.autodiscover_tasks(lambda: [re.sub(r'\.apps\.\w+Config', '', app) for app in settings.INSTALLED_APPS])

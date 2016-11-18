@@ -185,14 +185,14 @@ AVATAR_AUTO_GENERATE_SIZES = [1024, 64]
 # Celery
 # http://docs.celeryproject.org/en/latest/configuration.html
 BROKER_URL = env('CELERY_BROKER_URL')
-CELERY_QUEUES = (
+CELERY_TASK_QUEUES = (
     Queue('default', Exchange('default'), routing_key='default'),
 )
-CELERY_DEFAULT_QUEUE = 'default'
-CELERY_DEFAULT_EXCHANGE_TYPE = 'direct'
-CELERY_DEFAULT_ROUTING_KEY = 'default'
+CELERY_TASK_DEFAULT_QUEUE = 'default'
+CELERY_TASK_DEFAULT_EXCHANGE_TYPE = 'direct'
+CELERY_TASK_DEFAULT_ROUTING_KEY = 'default'
 CELERY_TASK_SERIALIZER = 'pickle'
-CELERYBEAT_SCHEDULE = {
+CELERY_BEAT_SCHEDULE = {
     'clean-up-social-auth-cache': {
         'task': 'apps.social_auth_cache.tasks.clean_up_social_auth_cache',
         'schedule': timedelta(hours=1)
