@@ -9,7 +9,7 @@ pytest-cov==2.3.1
 pytest-django==3.0.0
 
 # test factories
-factory-boy==2.7.0
+factory-boy==2.8.1
 
 # fake data
 Faker==0.7.5
