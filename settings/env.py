@@ -13,6 +13,7 @@ def env(key, default=None, required=True):
         value = os.environ[key]
         return ast.literal_eval(value)
     except (SyntaxError, ValueError):
+        value = value.replace('**newline**', '\n')
         return value
     except KeyError:
         if default or not required:
