@@ -18,7 +18,7 @@ Faker==0.7.7
 ipython==5.1.0
 
 # helpers
-dj-inmemorystorage==1.4.1
+dj-inmemorystorage==1.4.0
 
 # fake http requests
 httpretty==0.8.14
