@@ -27,7 +27,6 @@ Properties marked `Private` are only visible when the user is your own.
 <%= json :user %>
 ++++
 
-
 == Create (register)
 
 Register a new user.  Returns the user object.
@@ -54,7 +53,6 @@ POST /register
 <%= json :user %>
 ++++
 
-
 == Retrieve
 
 Retrieve a user.
@@ -63,7 +61,6 @@ Retrieve a user.
 ----
 GET /users/:id
 ----
-
 
 == Update
 
@@ -81,11 +78,20 @@ PUT /users/:id
 |===
 |Name |Type |Description
 
+|`referred_by_code` | `string` | Add a referral code for the user who referred this user.  Useful for social auth or if the user forgets to enter it on signup.  Only usable for 24 hours after registration.
 |`avatar` | `image` |
 |`first_name` | `string` |
 |`last_name` | `string` |
 |===
 
+==== Example: Add who the user was referred by.
+
+++++
+
+<%= json \
+    referred_by_code: '8AZ7Z'
+%>
+++++
 
 == List
 
@@ -104,7 +110,6 @@ GET /users
 
 |`q` | A search query.
 |===
-
 
 == Login
 
@@ -131,12 +136,10 @@ POST /login
 <%= json :auth_token %>
 ++++
 
-
 == Social Auth (Register / Login)
 
 Login / register using a social account.  As this can be a bit complex, see the
 separate page on it: link:/users/social-auth[Social Auth]
-
 
 == Me
 
@@ -146,7 +149,6 @@ Get the currently logged in user.
 ----
 GET /users/me
 ----
-
 
 == Change Password
 

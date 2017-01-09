@@ -80,7 +80,7 @@ For providers that use the OAuth2 protocl such as facebook.
 |`code` | `string` | **Required**  OAuth authorization code.
 |`redirect_uri` | `string` | **Required**  Redirect URI the client used for OAuth2 authentication with the provider.
 |`email` | `string` | Used when the social auth provider does not give us an email address. See the errors section below.
-|`referral_code` | `string` | Referral code of the person that referred the user.
+|`referral_code` | `string` | Referral code of the person that referred the user.  Note: because authorization codes expire relatively quickly it may not be possible to specify the referral code here.  In this case the user's referral code can be updated. See link:/users#update[User Update].
 |===
 
 == Shared Output
