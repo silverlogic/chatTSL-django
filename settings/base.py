@@ -31,6 +31,7 @@ PASSWORD_HASHERS = [
 # Sites
 URL = env('URL')
 FRONT_URL = env('FRONT_URL')
+FRONT_FORGOT_PASSWORD_URL = FRONT_URL + '/forgot-password/{token}'
 FRONT_CHANGE_EMAIL_CONFIRM_URL = FRONT_URL + '/change-email/{id}/{token}'
 FRONT_CHANGE_EMAIL_VERIFY_URL = FRONT_URL + '/change-email-verify/{id}/{token}'
 FRONT_CONFIRM_EMAIL_URL = FRONT_URL + '/confirm-email/{id}/{token}'
@@ -267,3 +268,6 @@ SOCIAL_AUTH_LINKEDIN_OAUTH2_SCOPE = ['r_basicprofile', 'r_emailaddress']
 SOCIAL_AUTH_LINKEDIN_OAUTH2_FIELD_SELECTORS = ['email-address', 'picture-urls::(original)']
 if SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY and SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET:
     AUTHENTICATION_BACKENDS.append('social.backends.linkedin.LinkedinOAuth2')
+
+# BRANCH.IO
+BRANCH_KEY = env('BRANCH_KEY')
