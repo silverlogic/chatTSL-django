@@ -1,0 +1,38 @@
+-
+title: Referrals
+-
+
+= Referrals
+
+== Send Referrals
+
+Request a referral code email that contains a deep link to mobile app:
+
+[source]
+[cols="2,1,5"]
+|===
+|Name |Type |Description
+
+|`user` | `integer` | ID of user making referral.
+|`email` | `string` | The request email address.
+|`type` | `string` | Type of request. Set to `invite-referral`.
+
+|===
+
+[source]
+----
+POST /referrals
+----
+
+=== Input
+
+[cols="2,1,5"]
+|===
+|Name |Type |Description
+
+|`email` | `string` | The email to send the referral code too.
+|===
+
+
+// vim: set ft=asciidoc:
+
