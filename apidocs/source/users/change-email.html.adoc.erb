@@ -25,7 +25,18 @@ as follows:
 **Authentication Required**
 
 This begins the process of changing an email.  Once this step is completed a confirmation email will be sent
-to the user's **old** email with a link to `<front_url>/change-email/<id>/<token>`.  The token will be used in the next step.
+to the user's **old** email with a deep link to mobile app or fallback url. The fallback url is `<front_url>/change-email/<id>/<token>`.  The token will be used in the next step. Data available to mobile app when link is opened:
+
+[cols="2,1,5"]
+|===
+|Name |Type |Description
+|`user` | `int` | ID of user making email change request.
+|`token` | `string` |
+|`new_email` | `string` | New email user wants to change to.
+|`$fallback_url` | `string` | Link to react app to handle request. Maybe link:https://dev.branch.io/getting-started/configuring-links/guide/#fallback-url-customization[platform specific]
+|`type` | `string` | Type of request. Set to `change-email-confirm`.
+|===
+
 
 [source]
 ----
@@ -47,8 +58,20 @@ POST /change-email
 **Authentication not required**
 
 The second step is confirming that the user has control over the original email.  Once this step is completed
-an email will be sent to the user's **new** email with a link to `<front_url>/change-email-verify/<id>/<token>`.  The token
-will be used in the last step.  After this `user.is_new_email_confirmed` will be `true`.
+an email will be sent to the user's **new** email with a deep link to mobile app or fallback url.
+The fallback url is `<front_url>/change-email-verify/<id>/<token>`.  The token
+will be used in the last step.  After this `user.is_new_email_confirmed` will be `true`. Data available to mobile app when link is opened:
+
+[cols="2,1,5"]
+|===
+|Name |Type |Description
+|`user` | `int` | ID of user making email change request.
+|`token` | `string` |
+|`new_email` | `string` | New email user wants to change to.
+|`$fallback_url` | `string` | Link to react app to handle request. Maybe link:https://dev.branch.io/getting-started/configuring-links/guide/#fallback-url-customization[platform specific]
+|`type` | `string` | Type of request. Set to `change-email-verify`.
+|===
+
 
 [source]
 ----
