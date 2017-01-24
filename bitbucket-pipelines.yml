@@ -20,7 +20,7 @@ pipelines:
           - export CELERY_BROKER_URL="N/A"
           - export URL="http://localhost"
           - export FRONT_URL="http://app.localhost"
-          - export BRANCH_KEY="N/A"
+          - export BRANCH_KEY="key_test_pmEf8Pqmg05t4N1MamZw4egeyxahRfTj"
           - py.test --cov="apps" tests
 
           - pip install codecov
