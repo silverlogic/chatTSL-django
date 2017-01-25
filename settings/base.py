@@ -191,7 +191,7 @@ CELERY_TASK_QUEUES = (
 CELERY_TASK_DEFAULT_QUEUE = 'default'
 CELERY_TASK_DEFAULT_EXCHANGE_TYPE = 'direct'
 CELERY_TASK_DEFAULT_ROUTING_KEY = 'default'
-CELERY_TASK_SERIALIZER = 'pickle'
+CELERY_TASK_SERIALIZER = 'json'
 CELERY_BEAT_SCHEDULE = {
     'clean-up-social-auth-cache': {
         'task': 'apps.social_auth_cache.tasks.clean_up_social_auth_cache',
