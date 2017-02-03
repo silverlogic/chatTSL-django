@@ -1,6 +1,6 @@
 -r base.txt
 # code style
-flake8==3.0.4
+flake8==3.2.1
 isort==4.2.5
 
 # testing
