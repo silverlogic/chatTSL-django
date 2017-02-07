@@ -55,3 +55,19 @@ py.test --reuse-db
 The API documentation is built using [middleman](https://middlemanapp.com/) and is
 located under the apidocs directory.  All documentation is written in
 [asciidoctor](http://asciidoctor.org/) format.
+
+### Running the API Documentation
+
+**Note all commands are run from within the apidocs directory.**
+
+1. Install the required gems.
+
+    ```
+    bundle install
+    ```
+
+2. Run the dev server
+
+    ```
+    middleman
+    ```
