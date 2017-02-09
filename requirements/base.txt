@@ -12,6 +12,7 @@ easy-thumbnails==2.3
 django-fsm==2.4.0
 django-fsm-admin==1.2.4
 python-social-auth==0.2.21
+django-phonenumbers==1.0.1
 
 # sending emails
 djmail==0.13.0
@@ -33,3 +34,6 @@ hashids==1.1.0
 
 # datetime helpers
 python-dateutil==2.6.0
+
+# phone number parser
+phonenumbers==8.2.0
