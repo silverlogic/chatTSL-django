@@ -183,6 +183,7 @@ AVATAR_STORAGE_DIR = 'user-avatars'
 AVATAR_CLEANUP_DELETED = True
 AVATAR_MAX_AVATARS_PER_USER = 1
 AVATAR_AUTO_GENERATE_SIZES = [1024, 64]
+AVATAR_CACHE_ENABLED = False
 
 # Celery
 # http://docs.celeryproject.org/en/latest/configuration.html
