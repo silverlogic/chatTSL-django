@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'social.apps.django_app.default',
     'rest_social_auth',
     'fsm_admin',
+    'phonenumber_field',
 
     # Base
     'apps.api',
@@ -268,6 +269,9 @@ SOCIAL_AUTH_LINKEDIN_OAUTH2_SCOPE = ['r_basicprofile', 'r_emailaddress']
 SOCIAL_AUTH_LINKEDIN_OAUTH2_FIELD_SELECTORS = ['email-address', 'picture-urls::(original)']
 if SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY and SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET:
     AUTHENTICATION_BACKENDS.append('social.backends.linkedin.LinkedinOAuth2')
+
+# Phone Numbers
+PHONENUMBER_DB_FORMAT = 'E164'
 
 # BRANCH.IO
 BRANCHIO_KEY = env('BRANCHIO_KEY')

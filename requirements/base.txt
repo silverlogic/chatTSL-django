@@ -12,7 +12,7 @@ easy-thumbnails==2.3
 django-fsm==2.4.0
 django-fsm-admin==1.2.4
 python-social-auth==0.2.21
-django-phonenumbers==1.0.1
+django-phonenumber-field==1.1.0
 
 # sending emails
 djmail==0.13.0
