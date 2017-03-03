@@ -31,10 +31,20 @@ PASSWORD_HASHERS = [
 # Sites
 URL = env('URL')
 FRONT_URL = env('FRONT_URL')
+FRONT_CONFIRM_EMAIL_URL = FRONT_URL + '/confirm-email/{id}/{token}'
 FRONT_FORGOT_PASSWORD_URL = FRONT_URL + '/forgot-password/{token}'
 FRONT_CHANGE_EMAIL_CONFIRM_URL = FRONT_URL + '/change-email/{id}/{token}'
 FRONT_CHANGE_EMAIL_VERIFY_URL = FRONT_URL + '/change-email-verify/{id}/{token}'
-FRONT_CONFIRM_EMAIL_URL = FRONT_URL + '/confirm-email/{id}/{token}'
+
+# IOS Deep Links
+IOS_CONFIRM_EMAIL_DEEP_LINK = False
+IOS_FORGOT_PASSWORD_DEEP_LINK = False
+IOS_CHANGE_EMAIL_DEEP_LINK = False
+
+# Android Deep Links
+ANDROID_CONFIRM_EMAIL_DEEP_LINK = False
+ANDROID_FORGOT_PASSWORD_DEEP_LINK = False
+ANDROID_CHANGE_EMAIL_DEEP_LINK = False
 
 # Mail
 EMAIL_BACKEND = 'djmail.backends.default.EmailBackend'

@@ -6,7 +6,7 @@ title: Confirm Email
 
 **Authentication not required**
 
-When a user signs up, the welcome email will have a link to `<front_url>/confirm-email/<id>/<token>`.  Front end react app will make a POST request as documented below.
+When a user signs up, the welcome email will contain a deep link with a fallback of `<front_url>/confirm-email/<id>/<token>`.
 
 [source]
 ----
@@ -20,6 +20,18 @@ POST /users/:id/confirm-email
 |Name |Type |Description
 
 |`token` | `string` | Token from the URL in the email sent.
+|===
+
+=== Deep Link Data
+
+[cols="2,1,5"]
+|===
+|Name |Type |Description
+
+|`$desktop_url` | `string` | The web URL to perform confirm email.
+|`type` | `string` | Always `confirm-email`
+|`user` | `integer` | The ID of the user who is confirming their email.
+|`token` | `string` | The verification token.
 |===
 
 
