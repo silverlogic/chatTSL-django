@@ -25,18 +25,7 @@ as follows:
 **Authentication Required**
 
 This begins the process of changing an email.  Once this step is completed a confirmation email will be sent
-to the user's **old** email with a deep link to mobile app or fallback url. The fallback url is `<front_url>/change-email/<id>/<token>`.  The token will be used in the next step. Data available to mobile app when link is opened:
-
-[cols="2,1,5"]
-|===
-|Name |Type |Description
-|`user` | `int` | ID of user making email change request.
-|`token` | `string` |
-|`new_email` | `string` | New email user wants to change to.
-|`$fallback_url` | `string` | Link to react app to handle request. Maybe link:https://dev.branch.io/getting-started/configuring-links/guide/#fallback-url-customization[platform specific]
-|`type` | `string` | Type of request. Set to `change-email-confirm`.
-|===
-
+to the user's **old** email with a deep link with a fallback of `<front_url>/change-email/<id>/<token>`.  The token will be used in the next step.
 
 [source]
 ----
@@ -52,26 +41,25 @@ POST /change-email
 |`new_email` | `string` | The email to change to.
 |===
 
+=== Deep Link Data
+
+[cols="2,1,5"]
+|===
+|Name |Type |Description
+
+|`$desktop_url` | `string` | The web URL to perform confirm change.
+|`type` | `string` | Always `change-email-confirm`
+|`user` | `integer` | The ID of the user who is changing their email.
+|`token` | `string` | The verification token.
+|===
 
 == Confirm Change (Step 2)
 
 **Authentication not required**
 
 The second step is confirming that the user has control over the original email.  Once this step is completed
-an email will be sent to the user's **new** email with a deep link to mobile app or fallback url.
-The fallback url is `<front_url>/change-email-verify/<id>/<token>`.  The token
-will be used in the last step.  After this `user.is_new_email_confirmed` will be `true`. Data available to mobile app when link is opened:
-
-[cols="2,1,5"]
-|===
-|Name |Type |Description
-|`user` | `int` | ID of user making email change request.
-|`token` | `string` |
-|`new_email` | `string` | New email user wants to change to.
-|`$fallback_url` | `string` | Link to react app to handle request. Maybe link:https://dev.branch.io/getting-started/configuring-links/guide/#fallback-url-customization[platform specific]
-|`type` | `string` | Type of request. Set to `change-email-verify`.
-|===
-
+an email will be sent to the user's **new** email with a deep link with a fallback url of `<front_url>/change-email-verify/<id>/<token>`.
+The token will be used in the last step.  After this `user.is_new_email_confirmed` will be `true`.
 
 [source]
 ----
@@ -85,6 +73,18 @@ POST /change-email/:id/confirm
 |Name |Type |Description
 
 |`token` | `string` | Token from the URL in the email sent in step 1.
+|===
+
+=== Deep Link Data
+
+[cols="2,1,5"]
+|===
+|Name |Type |Description
+
+|`$desktop_url` | `string` | The web URL to perform verify new email.
+|`type` | `string` | Always `change-email-verify`
+|`user` | `integer` | The ID of the user who is changing their email.
+|`token` | `string` | The verification token.
 |===
 
 
