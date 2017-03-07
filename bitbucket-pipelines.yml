@@ -14,6 +14,7 @@ pipelines:
           - pip install -r requirements/dev.txt
 
           - flake8
+          - if [ $(isort **/*.py --diff -q | wc -l) -gt 0 ]; then echo "Sort your imports and commit again."; (exit 1); fi
 
           - export SECRET_KEY=notsecret
           - export DATABASE_URL='postgis://pipelines:pipelines@127.0.0.1/baseapp'
