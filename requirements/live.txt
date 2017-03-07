@@ -4,4 +4,4 @@ django-storages==1.4
 django-s3-folder-storage==0.3
 
 # error logging using sentry
-raven==5.31.0
+raven==6.0.0
