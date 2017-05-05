@@ -20,7 +20,7 @@ pipelines:
           - py.test --cov="apps" tests
 
           - pip install codecov
-          - codecov --token="17ec662a-faa2-4c69-b2ba-e272bf81e0a4"
+          - codecov --token="$CODECOV_TOKEN"
 
           - test "$BITBUCKET_BRANCH" = master && curl -XPOST "https://ops.tsl.io/api/17/job/$RUNDECK_STAGING_JOB_ID/executions?authtoken=6m5rvQR1JFY8r43WtZkKkvQyKtjQIisl" || true  # Deploy staging api
           - test "$BITBUCKET_BRANCH" = master && curl -XPOST "https://ops.tsl.io/api/17/job/$RUNDECK_STAGING_DOCS_JOB_ID/executions?authtoken=6m5rvQR1JFY8r43WtZkKkvQyKtjQIisl" || true  # Deploy staging apidocs
