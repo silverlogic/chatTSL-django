@@ -6,6 +6,7 @@ pipelines:
         script:
           - pyvenv venv
           - source venv/bin/activate
+          - pip install -U pip
           - pip install -r requirements/dev.txt
 
           - flake8
