@@ -68,7 +68,7 @@ INSTALLED_APPS = [
     'easy_thumbnails',
     'django_jinja',
     'crispy_forms',
-    'social.apps.django_app.default',
+    'social_django',
     'rest_social_auth',
     'fsm_admin',
     'phonenumber_field',
@@ -83,7 +83,7 @@ INSTALLED_APPS = [
     # Project
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -218,19 +218,19 @@ SOCIAL_AUTH_PIPELINE = [
     # format to create the user instance later. On some cases the details are
     # already part of the auth response from the provider, but sometimes this
     # could hit a provider API.
-    'social.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_details',
 
     # Get the social uid from whichever service we're authing thru. The uid is
     # the unique identifier of the given user in the provider.
-    'social.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.social_uid',
 
     # Verifies that the current auth process is valid within the current
     # project, this is where emails and domains whitelists are applied (if
     # defined).
-    'social.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.auth_allowed',
 
     # Checks if the current social-account is already associated in the site.
-    'social.pipeline.social_auth.social_user',
+    'social_core.pipeline.social_auth.social_user',
 
     'apps.social_auth_cache.pipeline.cache_access_token',
 
@@ -239,17 +239,17 @@ SOCIAL_AUTH_PIPELINE = [
     'apps.users.pipeline.get_username',
 
     # Create a user account if we haven't found one yet.
-    'social.pipeline.user.create_user',
+    'social_core.pipeline.user.create_user',
 
     # Create the record that associated the social account with this user.
-    'social.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.associate_user',
 
     # Populate the extra_data field in the social record with the values
     # specified by settings (and the default ones like access_token, etc).
-    'social.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.social_auth.load_extra_data',
 
     # Update the user record with any changed info from the auth service.
-    'social.pipeline.user.user_details',
+    'social_core.pipeline.user.user_details',
 
     'apps.users.pipeline.set_avatar',
     'apps.users.pipeline.set_is_new',
@@ -265,13 +265,13 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
     'fields': 'id,email,first_name,last_name'
 }
 if SOCIAL_AUTH_FACEBOOK_KEY and SOCIAL_AUTH_FACEBOOK_SECRET:
-    AUTHENTICATION_BACKENDS.append('social.backends.facebook.FacebookOAuth2')
+    AUTHENTICATION_BACKENDS.append('social_core.backends.facebook.FacebookOAuth2')
 
 ## Social Auth Twitter
 SOCIAL_AUTH_TWITTER_KEY = env('SOCIAL_AUTH_TWITTER_KEY', required=False)
 SOCIAL_AUTH_TWITTER_SECRET = env('SOCIAL_AUTH_TWITTER_SECRET', required=False)
 if SOCIAL_AUTH_TWITTER_KEY and SOCIAL_AUTH_TWITTER_SECRET:
-    AUTHENTICATION_BACKENDS.append('social.backends.twitter.TwitterOAuth')
+    AUTHENTICATION_BACKENDS.append('social_core.backends.twitter.TwitterOAuth')
 
 ## Social Auth LinkedIn
 SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY = env('SOCIAL_AUTH_LINKEDIN_KEY', required=False)
@@ -279,7 +279,7 @@ SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET = env('SOCIAL_AUTH_LINKEDIN_SECRET', required
 SOCIAL_AUTH_LINKEDIN_OAUTH2_SCOPE = ['r_basicprofile', 'r_emailaddress']
 SOCIAL_AUTH_LINKEDIN_OAUTH2_FIELD_SELECTORS = ['email-address', 'picture-urls::(original)']
 if SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY and SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET:
-    AUTHENTICATION_BACKENDS.append('social.backends.linkedin.LinkedinOAuth2')
+    AUTHENTICATION_BACKENDS.append('social_core.backends.linkedin.LinkedinOAuth2')
 
 # Phone Numbers
 PHONENUMBER_DB_FORMAT = 'E164'

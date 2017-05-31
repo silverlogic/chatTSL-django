@@ -1,9 +1,5 @@
-from django.utils.translation import ugettext_lazy as _
-
 from drf_extra_fields.fields import Base64ImageField
 from easy_thumbnails.files import get_thumbnailer
-from phonenumber_field.phonenumber import to_python
-from rest_framework import serializers
 
 
 class ThumbnailImageField(Base64ImageField):
@@ -35,15 +31,3 @@ class ThumbnailImageField(Base64ImageField):
             sizes[name] = url
 
         return sizes
-
-
-class PhoneNumberField(serializers.CharField):
-    default_error_messages = {
-        'invalid': _('Enter a valid phone number.'),
-    }
-
-    def to_internal_value(self, data):
-        phone_number = to_python(data)
-        if phone_number and not phone_number.is_valid():
-            raise serializers.ValidationError(self.error_messages['invalid'])
-        return phone_number

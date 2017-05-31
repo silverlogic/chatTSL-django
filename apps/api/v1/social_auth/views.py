@@ -11,8 +11,8 @@ from requests import HTTPError
 from rest_framework import serializers, status, viewsets
 from rest_framework.response import Response
 from rest_social_auth.views import DOMAIN_FROM_ORIGIN, SocialTokenOnlyAuthView, decorate_request
-from social.exceptions import AuthException
-from social.utils import parse_qs, user_is_authenticated
+from social_core.exceptions import AuthException
+from social_core.utils import parse_qs, user_is_authenticated
 
 from apps.social_auth_cache.models import SocialAuthAccessTokenCache
 from apps.users.pipeline import EmailAlreadyExistsError, EmailNotProvidedError
@@ -42,6 +42,7 @@ class SocialAuthViewSet(SocialTokenOnlyAuthView, viewsets.GenericViewSet):
             return self.respond_error("Provider is not specified")
         self.set_input_data(request, input_data)
         decorate_request(request, provider_name)
+        print(self.request.backend)
         serializer_in = self.get_serializer_in(data=input_data)
         if self.oauth_v1() and request.backend.OAUTH_TOKEN_PARAMETER_NAME not in input_data:
             # oauth1 first stage (1st is get request_token, 2nd is get access_token)
