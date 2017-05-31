@@ -36,8 +36,3 @@ INSTALLED_APPS += ['raven.contrib.django.raven_compat']
 RAVEN_CONFIG = {
     'dsn': env('SENTRY_DSN')
 }
-LOGGING['handlers']['sentry'] = {
-    'level': 'ERROR',
-    'class': 'raven.contrib.django.handlers.SentryHandler',
-}
-LOGGING['root']['handlers'].append('sentry')
