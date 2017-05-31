@@ -1,4 +1,4 @@
-image: silverlogic/python3.5
+image: silverlogic/python3.6
 
 pipelines:
   default:
