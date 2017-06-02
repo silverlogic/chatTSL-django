@@ -34,5 +34,6 @@ THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
 # Sentry (raven) error logging
 INSTALLED_APPS += ['raven.contrib.django.raven_compat']
 RAVEN_CONFIG = {
-    'dsn': env('SENTRY_DSN')
+    'dsn': env('SENTRY_DSN'),
+    'environment': env('SENTRY_ENVIRONMENT'),
 }
