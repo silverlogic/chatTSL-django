@@ -1,6 +1,7 @@
 from .dev import *  # noqa
 
 DEFAULT_FILE_STORAGE = 'inmemorystorage.InMemoryStorage'
+INMEMORYSTORAGE_PERSIST = True
 
 # Emails
 DJMAIL_REAL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
