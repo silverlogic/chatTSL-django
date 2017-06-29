@@ -22,7 +22,7 @@ body {
 
     .sidebar-nav-heading {
       font-size: 14px;
-      padding: 0 20px 4px;
+      padding: 0 20px 0px;
       margin: 0;
       text-transform: uppercase;
       color: #939da3;
@@ -31,7 +31,7 @@ body {
     .sidebar-nav-items {
       margin: 0;
       padding: 0 0 26px;
-      line-height: 20px;
+      line-height: 14px;
       list-style: none;
 
       .sidebar-nav-items {
@@ -51,7 +51,7 @@ body {
     .sidebar-nav-item {
       display: block;
       margin: 0;
-      padding: 6px 20px;
+      padding: 0px 20px;
       color: #4c555a;
       cursor: pointer;
       font-size: 14px;
