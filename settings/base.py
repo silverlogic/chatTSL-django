@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'avatar',
     'easy_thumbnails',
+    'django_filter',
     'django_jinja',
     'crispy_forms',
     'social_django',
