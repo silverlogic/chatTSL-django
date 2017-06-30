@@ -1,3 +1,5 @@
+import raven
+
 from .base import *  # noqa
 
 DEBUG = False
@@ -36,4 +38,5 @@ INSTALLED_APPS += ['raven.contrib.django.raven_compat']
 RAVEN_CONFIG = {
     'dsn': env('SENTRY_DSN'),
     'environment': env('SENTRY_ENVIRONMENT'),
+    'release': raven.fetch_git_sha(BASE_DIR.resolve()),
 }
