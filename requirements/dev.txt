@@ -26,3 +26,4 @@ httpretty==0.8.14
 
 # debug helper / performance monitoring
 django-debug-toolbar==1.8
+git+https://github.com/jazzband/silk@6c53b4e4de5fd95395a903ac075306bfb0393795
