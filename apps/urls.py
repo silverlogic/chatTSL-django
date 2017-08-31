@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
@@ -19,3 +20,7 @@ if settings.DEBUG:
     urlpatterns += static(media_url.path, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(static_url.path, document_root=settings.STATIC_ROOT)
     urlpatterns += [url(r'^__debug__/', include(debug_toolbar.urls))]
+
+
+if apps.is_installed('silk'):
+    urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
