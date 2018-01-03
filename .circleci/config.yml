@@ -1,0 +1,133 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: silverlogic/python3.6
+      - image: silverlogic/postgres9.6
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "requirements/base.txt" }}-{{ checksum "requirements/dev.txt" }}
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install poppler-utils
+            python3 -m venv ../venv
+            . ../venv/bin/activate
+            pip install -U pip
+            pip install -r requirements/dev.txt
+      - save_cache:
+          key: v2-dependencies-{{ checksum "requirements/base.txt" }}-{{ checksum "requirements/dev.txt" }}
+          paths:
+            - ../venv
+      - run:
+          name: Run tests
+          command: |
+            . ../venv/bin/activate
+            export SECRET_KEY=notsecret
+            export DATABASE_URL='postgis://postgres:postgres@localhost/ci'
+            export CELERY_BROKER_URL="N/A"
+            export CELERY_RESULTS_URL="N/A"
+            export URL="http://localhost"
+            export FRONT_URL="http://app.localhost"
+            export BRANCHIO_KEY="key_test_nkxeX3kxb2ZmIrVEZUDD6indvChx8a9s"
+            export GOOGLE_API_KEY='AIzaSyCD3UxEh2Ig6WWXPxcT4a0md9abn4sSewA'
+            py.test --cov="apps" tests
+      - run:
+          name: Upload code coverage
+          command: |
+            . ../venv/bin/activate
+            pip install codecov
+            codecov --token="$CODECOV_TOKEN"
+
+  lint:
+    docker:
+      - image: silverlogic/python3.6
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "requirements/base.txt" }}-{{ checksum "requirements/dev.txt" }}
+      - run:
+          name: Install dependencies
+          command: |
+            python3 -m venv ../venv
+            . ../venv/bin/activate
+            pip install -U pip
+            pip install -r requirements/dev.txt
+      - save_cache:
+          key: v2-dependencies-{{ checksum "requirements/base.txt" }}-{{ checksum "requirements/dev.txt" }}
+          paths:
+          - ../venv
+      - run:
+          name: Run flake8
+          command: |
+            . ../venv/bin/activate
+            flake8
+      - run:
+          name: run isort
+          command: |
+            . ../venv/bin/activate
+            isort --check
+
+  apidocs:
+    docker:
+      - image: ruby:2.3
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "apidocs/Gemfile.lock" }}
+      - run:
+          name: Install dependencies
+          command: |
+            cd apidocs
+            bundle install --path vendor/bundle
+      - save_cache:
+          key: v2-dependencies-{{ checksum "apidocs/Gemfile.lock" }}
+          paths:
+            - apidocs/vendor/bundle
+      - run:
+          name: Build api docs
+          command: |
+            cd apidocs
+            bundle exec middleman build
+
+  deploy:
+    docker:
+      - image: silverlogic/python3.6
+    working_directory: ~/repo
+    steps:
+      - deploy:
+          name: Maybe Deploy
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              curl -XPOST "https://ops.tsl.io/api/17/job/$RUNDECK_STAGING_JOB_ID/executions?authtoken=$RUNDECK_AUTH_TOKEN"
+              curl -XPOST "https://ops.tsl.io/api/17/job/$RUNDECK_STAGING_DOCS_JOB_ID/executions?authtoken=$RUNDECK_AUTH_TOKEN"
+            elif [ "${CIRCLE_BRANCH}" == "production" ]; then
+              curl -XPOST "https://ops.tsl.io/api/17/job/$RUNDECK_PRODUCTION_JOB_ID/executions?authtoken=$RUNDECK_AUTH_TOKEN"
+            fi
+
+workflows:
+  version: 2
+  build_lint_deploy:
+    jobs:
+      - build
+      - lint
+      - apidocs
+      - deploy:
+          filters:
+            branches:
+              only:
+                - master
+                - production
+          requires:
+            - build
+            - lint
+            - apidocs
+          context: org-global
