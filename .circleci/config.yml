@@ -33,8 +33,7 @@ jobs:
             export CELERY_RESULTS_URL="N/A"
             export URL="http://localhost"
             export FRONT_URL="http://app.localhost"
-            export BRANCHIO_KEY="key_test_nkxeX3kxb2ZmIrVEZUDD6indvChx8a9s"
-            export GOOGLE_API_KEY='AIzaSyCD3UxEh2Ig6WWXPxcT4a0md9abn4sSewA'
+            export BRANCHIO_KEY="key_test_pmEf8Pqmg05t4N1MamZw4egeyxahRfTj"
             py.test --cov="apps" tests
       - run:
           name: Upload code coverage
