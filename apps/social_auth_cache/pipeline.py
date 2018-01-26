@@ -10,7 +10,7 @@ def cache_access_token(strategy, response, user=None, *args, **kwargs):
         access_token = response['access_token']
         try:
             access_token = json.dumps(access_token)
-        except:
+        except:  # noqa
             pass
 
         oauth_token = data.get('oauth_token', '')
