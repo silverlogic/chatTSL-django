@@ -1,18 +1,18 @@
 -r base.txt
 # code style
-flake8==3.3.0
-isort==4.2.5
+flake8==3.5.0
+isort==4.2.15
 
 # testing
-pytest==3.1.1
+pytest==3.3.2
 pytest-cov==2.5.1
 pytest-django==3.1.2
 
 # test factories
-factory-boy==2.8.1
+factory-boy==2.9.2
 
 # fake data
-Faker==0.7.12
+Faker==0.8.10
 
 # prettier python prompt / manage.py shell
 ipython==6.2.1
@@ -25,5 +25,5 @@ dj-inmemorystorage==1.4.0
 httpretty==0.8.14
 
 # debug helper / performance monitoring
-django-debug-toolbar==1.8
-git+https://github.com/jazzband/silk@6c53b4e4de5fd95395a903ac075306bfb0393795
+django-debug-toolbar==1.9
+django-silk==1.1.0

@@ -112,7 +112,7 @@ class SocialAuthViewSet(SocialTokenOnlyAuthView, viewsets.GenericViewSet):
         if access_token:
             try:
                 access_token = json.loads(access_token)
-            except:
+            except:  # noqa
                 pass
             user = self.request.backend.do_auth(access_token)
         else:
