@@ -27,6 +27,7 @@ jobs:
           name: Run tests
           command: |
             . ../venv/bin/activate
+            mkdir test-reports
             export SECRET_KEY=notsecret
             export DATABASE_URL='postgis://postgres:postgres@localhost/ci'
             export CELERY_BROKER_URL="N/A"
@@ -34,7 +35,11 @@ jobs:
             export URL="http://localhost"
             export FRONT_URL="http://app.localhost"
             export BRANCHIO_KEY="key_test_pmEf8Pqmg05t4N1MamZw4egeyxahRfTj"
-            py.test --cov="apps" tests
+            py.test --cov="apps" --junitxml=test-reports/junit.xml tests
+      - store_test_results:
+          path: test-reports
+      - store_artifacts:
+          path: test-reports
       - run:
           name: Upload code coverage
           command: |
