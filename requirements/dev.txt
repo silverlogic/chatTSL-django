@@ -26,4 +26,4 @@ httpretty==0.8.14
 
 # debug helper / performance monitoring
 django-debug-toolbar==1.9
-django-silk==1.1.0
+django-silk==2.0.0
