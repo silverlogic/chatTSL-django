@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  test:
     docker:
       - image: silverlogic/python3.6
       - image: silverlogic/postgres9.6
@@ -119,9 +119,9 @@ jobs:
 
 workflows:
   version: 2
-  build_lint_deploy:
+  test-lint-apidocs-deploy:
     jobs:
-      - build
+      - test
       - lint
       - apidocs
       - deploy:
@@ -131,7 +131,40 @@ workflows:
                 - master
                 - production
           requires:
-            - build
+            - test
             - lint
             - apidocs
           context: org-global
+  nightly-staging:
+    triggers:
+      - schedule:
+          cron: "0 4 * * *"  # midnight est
+          filters:
+            branches:
+              only: master
+    jobs:
+      - test
+      - lint
+      - apidocs
+      - deploy:
+          filters:
+            branches:
+              only:
+                - master
+                - production
+          requires:
+            - test
+            - lint
+            - apidocs
+          context: org-global
+  nightly-production:
+    triggers:
+      - schedule:
+          cron: "0 4 * * *"  # midnight est
+          filters:
+            branches:
+              only: production
+    jobs:
+      - test
+      - lint
+      - apidocs
