@@ -13,16 +13,20 @@ MEDIA_URL = '{url}/media/'.format(url=URL)
 STATIC_ROOT = str(BASE_DIR.parent / 'static')
 STATIC_URL = '{url}/static/'.format(url=URL)
 
-# Debug Toolbar and Silk
-INSTALLED_APPS += ['silk', 'debug_toolbar']
+# Debug Toolbar
+INSTALLED_APPS += ['debug_toolbar']
 MIDDLEWARE = [
-    'silk.middleware.SilkyMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware'
 ] + MIDDLEWARE
 DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': 'apps.base.debug_toolbar.show_toolbar'
 }
 
+# Silk
+INSTALLED_APPS += ['silk']
+MIDDLEWARE = [
+    'silk.middleware.SilkyMiddleware',
+] + MIDDLEWARE
 SILKY_PYTHON_PROFILER = True
 SILKY_PYTHON_PROFILER_BINARY = True
 SILKY_META = True
