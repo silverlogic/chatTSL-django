@@ -125,29 +125,65 @@ jobs:
     working_directory: ~/repo
     steps:
       - deploy:
-          name: Maybe Deploy
+          name: Deploy
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              curl -XPOST "https://ops.tsl.io/api/17/job/$RUNDECK_STAGING_JOB_ID/executions?authtoken=$RUNDECK_AUTH_TOKEN"
-              curl -XPOST "https://ops.tsl.io/api/17/job/$RUNDECK_STAGING_DOCS_JOB_ID/executions?authtoken=$RUNDECK_AUTH_TOKEN"
-            elif [ "${CIRCLE_BRANCH}" == "production" ]; then
-              curl -XPOST "https://ops.tsl.io/api/17/job/$RUNDECK_PRODUCTION_JOB_ID/executions?authtoken=$RUNDECK_AUTH_TOKEN"
+            if [ -z "${CIRCLE_TAG}" ]; then
+              curl \
+                -XPOST \
+                --header "X-Rundeck-Auth-Token: $RUNDECK_AUTH_TOKEN" \
+                --header "Content-Type: application/json" \
+                --data "{\"options\": {\"version\": \"$CIRCLE_SHA1\"}}" \
+                "https://ops.tsl.io/api/18/job/$RUNDECK_STAGING_JOB_ID/executions"
+              curl \
+                -XPOST \
+                --header "X-Rundeck-Auth-Token: $RUNDECK_AUTH_TOKEN" \
+                --header "Content-Type: application/json" \
+                --data "{\"options\": {\"version\": \"$CIRCLE_SHA1\"}}" \
+                "https://ops.tsl.io/api/18/job/$RUNDECK_STAGING_DOCS_JOB_ID/executions"
+            else
+              curl \
+                -XPOST \
+                --header "X-Rundeck-Auth-Token: $RUNDECK_AUTH_TOKEN" \
+                --header "Content-Type: application/json" \
+                --data "{\"options\": {\"version\": \"$CIRCLE_TAG\"}}" \
+                "https://ops.tsl.io/api/18/job/$RUNDECK_PRODUCTION_JOB_ID/executions"
             fi
 
 workflows:
   version: 2
   test-lint-apidocs-deploy:
     jobs:
-      - test
-      - lint
-      - deps-security-check
-      - apidocs
+      - test:
+          filters:
+            branches:
+              ignore: production
+            tags:
+              only: /^v.*/
+      - lint:
+          filters:
+            branches:
+              ignore: production
+            tags:
+              only: /^v.*/
+      - deps-security-check:
+          filters:
+            branches:
+              ignore: production
+            tags:
+              only: /^v.*/
+      - apidocs:
+          filters:
+            branches:
+              ignore: production
+            tags:
+              only: /^v.*/
       - deploy:
           filters:
             branches:
               only:
                 - master
-                - production
+            tags:
+              only: /^v.*/
           requires:
             - test
             - lint
