@@ -2,6 +2,7 @@
 https://docs.djangoproject.com/en/1.9/ref/settings/
 '''
 import pathlib
+from collections import OrderedDict
 from datetime import timedelta
 
 from django.utils.translation import ugettext_lazy as _
@@ -217,8 +218,8 @@ CELERY_BEAT_SCHEDULE = {
 
 # Constance
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
-CONSTANCE_CONFIG = {
-}
+CONSTANCE_CONFIG = OrderedDict([
+])
 
 # Social Auth
 SOCIAL_AUTH_PIPELINE = [
