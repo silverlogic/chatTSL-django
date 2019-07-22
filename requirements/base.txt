@@ -12,6 +12,7 @@ easy-thumbnails==2.5.0
 django-fsm==2.6.0
 django-fsm-admin==1.2.4
 django-phonenumber-field==2.0.0
+django-constance[database]==2.4.0
 
 # sending emails
 djmail==1.0.1
