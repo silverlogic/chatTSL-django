@@ -73,6 +73,8 @@ INSTALLED_APPS = [
     'rest_social_auth',
     'fsm_admin',
     'phonenumber_field',
+    'constance',
+    'constance.backends.database',
 
     # Base
     'apps.api',
@@ -211,6 +213,11 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'apps.social_auth_cache.tasks.clean_up_social_auth_cache',
         'schedule': timedelta(hours=1)
     }
+}
+
+# Constance
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+CONSTANCE_CONFIG = {
 }
 
 # Social Auth
