@@ -77,6 +77,11 @@ jobs:
           command: |
             . ../venv/bin/activate
             isort --check
+      - run:
+          name: run black
+          command: |
+            . ../venv/bin/activate
+            black --check .
   deps-security-check:
     docker:
       - image: silverlogic/python3.6
