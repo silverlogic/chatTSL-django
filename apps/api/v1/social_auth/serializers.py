@@ -13,7 +13,7 @@ class SocialAuthBaseSerializer(serializers.Serializer):
     def validate_referral_code(self, referral_code):
         referrer = get_user_from_referral_code(referral_code)
         if not referrer:
-            raise serializers.ValidationError(_('Invalid referral code.'))
+            raise serializers.ValidationError(_("Invalid referral code."))
         return referral_code
 
 

@@ -14,14 +14,16 @@ class ModelSerializer(OrigModelSerializer):
         """
         field_class = self.serializer_url_field
         field_kwargs = {
-            'view_name': '{model_name}s-detail'.format(model_name=model_class._meta.object_name.lower())
+            "view_name": "{model_name}s-detail".format(
+                model_name=model_class._meta.object_name.lower()
+            )
         }
         return field_class, field_kwargs
 
     def build_standard_field(self, field_name, model_field):
         field_class, field_kwargs = super().build_standard_field(field_name, model_field)
         if issubclass(field_class, PhoneNumberField) and model_field.blank:
-            field_kwargs['allow_blank'] = True
+            field_kwargs["allow_blank"] = True
         return field_class, field_kwargs
 
 

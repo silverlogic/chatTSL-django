@@ -3,12 +3,13 @@ from rest_framework.response import Response
 
 
 class DestroyModelMixin:
-    '''Destroy mixin that returns empty object as response.
+    """Destroy mixin that returns empty object as response.
 
     iOS requires that every response contains a JSON serializable
     object because of the framework they use.
 
-    '''
+    """
+
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)

@@ -28,11 +28,11 @@ class SocialAuthViewSet(SocialTokenOnlyAuthView, viewsets.GenericViewSet):
         try:
             return self.do(request, *args, **kwargs)
         except Http404:
-            raise serializers.ValidationError({'provider': ['Invaild provider']})
+            raise serializers.ValidationError({"provider": ["Invaild provider"]})
         except EmailNotProvidedError:
-            raise serializers.ValidationError({'email': 'no_email_provided'})
+            raise serializers.ValidationError({"email": "no_email_provided"})
         except EmailAlreadyExistsError:
-            raise serializers.ValidationError({'email': 'email_already_in_use'})
+            raise serializers.ValidationError({"email": "email_already_in_use"})
 
     @method_decorator(never_cache)
     def do(self, request, *args, **kwargs):
@@ -46,7 +46,7 @@ class SocialAuthViewSet(SocialTokenOnlyAuthView, viewsets.GenericViewSet):
         serializer_in = self.get_serializer_in(data=input_data)
         if self.oauth_v1() and request.backend.OAUTH_TOKEN_PARAMETER_NAME not in input_data:
             # oauth1 first stage (1st is get request_token, 2nd is get access_token)
-            manual_redirect_uri = input_data.get('redirect_uri', None)
+            manual_redirect_uri = input_data.get("redirect_uri", None)
             if manual_redirect_uri:
                 self.request.backend.redirect_uri = manual_redirect_uri
             request_token = parse_qs(request.backend.set_unauthorized_token())
@@ -56,22 +56,24 @@ class SocialAuthViewSet(SocialTokenOnlyAuthView, viewsets.GenericViewSet):
             user = self.get_object()
         except (AuthException, HTTPError) as e:
             return self.respond_error(e)
-        if isinstance(user, HttpResponse):  # An error happened and pipeline returned HttpResponse instead of user
+        if isinstance(
+            user, HttpResponse
+        ):  # An error happened and pipeline returned HttpResponse instead of user
             return user
         resp_data = self.get_serializer(instance=user)
         self.do_login(request.backend, user)
         data = resp_data.data
-        data['is_new'] = user.is_new
+        data["is_new"] = user.is_new
         return Response(data)
 
     def get_object(self):
         user = self.request.user
-        manual_redirect_uri = self.request.auth_data.pop('redirect_uri', None)
+        manual_redirect_uri = self.request.auth_data.pop("redirect_uri", None)
         manual_redirect_uri = self.get_redirect_uri(manual_redirect_uri)
         if manual_redirect_uri:
             self.request.backend.redirect_uri = manual_redirect_uri
         elif DOMAIN_FROM_ORIGIN:
-            origin = self.request.strategy.request.META.get('HTTP_ORIGIN')
+            origin = self.request.strategy.request.META.get("HTTP_ORIGIN")
             if origin:
                 relative_path = urlparse(self.request.backend.redirect_uri).path
                 url = urlparse(origin)
@@ -93,12 +95,14 @@ class SocialAuthViewSet(SocialTokenOnlyAuthView, viewsets.GenericViewSet):
 
         # Deal with cached access token.
         access_token = None
-        oauth_token = self.request.data.get('oauth_token')
-        oauth_verifier = self.request.data.get('oauth_verifier')
-        code = self.request.data.get('code')
+        oauth_token = self.request.data.get("oauth_token")
+        oauth_verifier = self.request.data.get("oauth_verifier")
+        code = self.request.data.get("code")
         if oauth_token and oauth_verifier:
             try:
-                c = SocialAuthAccessTokenCache.objects.get(oauth_token=oauth_token, oauth_verifier=oauth_verifier)
+                c = SocialAuthAccessTokenCache.objects.get(
+                    oauth_token=oauth_token, oauth_verifier=oauth_verifier
+                )
                 access_token = c.access_token
             except SocialAuthAccessTokenCache.DoesNotExist:
                 pass
@@ -122,5 +126,5 @@ class SocialAuthViewSet(SocialTokenOnlyAuthView, viewsets.GenericViewSet):
 
     def respond_error(self, error):
         if isinstance(error, (AuthException, HTTPError)):
-            raise serializers.ValidationError({'non_field_errors': 'invalid_credentials'})
+            raise serializers.ValidationError({"non_field_errors": "invalid_credentials"})
         return Response(status=status.HTTP_400_BAD_REQUEST)
