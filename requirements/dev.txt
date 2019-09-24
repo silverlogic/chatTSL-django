@@ -20,7 +20,7 @@ ipython==6.2.1
 ipdb==0.10.3
 
 # helpers
-dj-inmemorystorage==1.4.0
+dj-inmemorystorage==1.4.1
 
 # fake http requests
 httpretty==0.8.14
