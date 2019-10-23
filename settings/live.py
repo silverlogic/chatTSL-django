@@ -1,4 +1,9 @@
-import raven
+import logging
+
+import sentry_sdk
+from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration
 
 from .base import *  # noqa
 
@@ -33,10 +38,10 @@ INSTALLED_APPS += ["storages", "s3_folder_storage"]
 # Thumbnails
 THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
 
-# Sentry (raven) error logging
-INSTALLED_APPS += ["raven.contrib.django.raven_compat"]
-RAVEN_CONFIG = {
-    "dsn": env("SENTRY_DSN"),
-    "environment": env("SENTRY_ENVIRONMENT"),
-    "release": raven.fetch_git_sha(BASE_DIR.resolve()),
-}
+# Sentry
+SENTRY_DSN = env("SENTRY_DSN")
+SENTRY_LOG_LEVEL = logging.INFO
+sentry_logging = LoggingIntegration(level=SENTRY_LOG_LEVEL, event_level=logging.ERROR)
+sentry_sdk.init(
+    dsn=SENTRY_DSN, integrations=[sentry_logging, DjangoIntegration(), CeleryIntegration()]
+)
