@@ -5,6 +5,8 @@ from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
 
+from apps.sentry import fetch_git_sha
+
 from .base import *  # noqa
 
 DEBUG = False
@@ -42,6 +44,9 @@ THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
 SENTRY_DSN = env("SENTRY_DSN")
 SENTRY_LOG_LEVEL = logging.INFO
 sentry_logging = LoggingIntegration(level=SENTRY_LOG_LEVEL, event_level=logging.ERROR)
+SENTRY_RELEASE = fetch_git_sha(BASE_DIR)
 sentry_sdk.init(
-    dsn=SENTRY_DSN, integrations=[sentry_logging, DjangoIntegration(), CeleryIntegration()]
+    dsn=SENTRY_DSN,
+    integrations=[sentry_logging, DjangoIntegration(), CeleryIntegration()],
+    release=SENTRY_RELEASE,
 )
