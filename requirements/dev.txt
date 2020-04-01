@@ -13,7 +13,7 @@ pytest-django==3.5.1
 factory-boy==2.9.2
 
 # fake data
-Faker==0.8.10
+Faker==4.0.2
 
 # prettier python prompt / manage.py shell
 ipython==6.2.1
