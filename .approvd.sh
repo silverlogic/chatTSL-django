@@ -1,2 +1,2 @@
 project=todo
-component=todo
+app=todo
