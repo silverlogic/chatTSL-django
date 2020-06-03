@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 
 import dj_database_url
 from kombu import Exchange, Queue
+from PIL import Image
 
 from .env import env
 
@@ -168,10 +169,16 @@ REST_FRAMEWORK = {
 # Avatars
 AVATAR_GRAVATAR_DEFAULT = "mp"
 AVATAR_STORAGE_DIR = "user-avatars"
+AVATAR_HASH_USERDIRNAMES = True
+AVATAR_EXPOSE_USERNAMES = False
+AVATAR_HASH_FILENAMES = True
 AVATAR_CLEANUP_DELETED = True
 AVATAR_MAX_AVATARS_PER_USER = 1
 AVATAR_AUTO_GENERATE_SIZES = [1024, 64]
 AVATAR_CACHE_ENABLED = False
+AVATAR_RESIZE_METHOD = Image.ANTIALIAS
+AVATAR_THUMB_FORMAT = "PNG"
+AVATAR_THUMB_QUALITY = 100
 
 # Celery
 # http://docs.celeryproject.org/en/latest/configuration.html
