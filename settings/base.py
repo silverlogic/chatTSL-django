@@ -193,8 +193,8 @@ CELERY_TASK_DEFAULT_EXCHANGE_TYPE = "direct"
 CELERY_TASK_DEFAULT_ROUTING_KEY = "default"
 CELERY_TASK_SERIALIZER = "json"
 CELERY_TASK_ROUTES = {
-    "tasks.send_messages": {"exchange": "default", "routing_key": "emails"},
-    "tasks.retry_send_messages": {"exchange": "default", "routing_key": "emails"},
+    "djmail.tasks.send_messages": {"exchange": "default", "routing_key": "emails"},
+    "djmail.tasks.retry_send_messages": {"exchange": "default", "routing_key": "emails"},
 }
 CELERY_BEAT_SCHEDULE = {
     "clean-up-social-auth-cache": {
