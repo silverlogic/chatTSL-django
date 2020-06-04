@@ -182,12 +182,20 @@ AVATAR_THUMB_QUALITY = 100
 
 # Celery
 # http://docs.celeryproject.org/en/latest/configuration.html
+exchange_default = Exchange("default")
 BROKER_URL = env("CELERY_BROKER_URL")
-CELERY_TASK_QUEUES = (Queue("default", Exchange("default"), routing_key="default"),)
+CELERY_TASK_QUEUES = (
+    Queue("default", exchange_default, routing_key="default"),
+    Queue("emails", exchange_default, routing_key="emails"),
+)
 CELERY_TASK_DEFAULT_QUEUE = "default"
 CELERY_TASK_DEFAULT_EXCHANGE_TYPE = "direct"
 CELERY_TASK_DEFAULT_ROUTING_KEY = "default"
 CELERY_TASK_SERIALIZER = "json"
+CELERY_TASK_ROUTES = {
+    "tasks.send_messages": {"exchange": "default", "routing_key": "emails"},
+    "tasks.retry_send_messages": {"exchange": "default", "routing_key": "emails"},
+}
 CELERY_BEAT_SCHEDULE = {
     "clean-up-social-auth-cache": {
         "task": "apps.social_auth_cache.tasks.clean_up_social_auth_cache",
