@@ -14,7 +14,6 @@ django-fsm-admin==1.2.4
 django-phonenumber-field==4.0.0
 django-constance[database]==2.6.0
 
-# requiring this version of django-picklefield fixes issue with django-constance==2.4.0 after the release of django-picklefield 3.0
 django-picklefield==3.0.1
 
 # sending emails
