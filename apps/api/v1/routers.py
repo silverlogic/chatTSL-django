@@ -2,7 +2,6 @@ from rest_framework.routers import DefaultRouter, DynamicRoute, Route
 
 
 class DefaultRouter(DefaultRouter):
-    """uses hyphens instead of underscore in dynamic routes."""
 
     routes = [
         # List route.

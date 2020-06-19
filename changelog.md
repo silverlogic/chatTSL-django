@@ -51,7 +51,9 @@ This version of BaseApp includes library updates for:
 * `base_name` to `basename` @ `router.py`
 * `@list_route` to `@action(detail=False)` @`views.py`s
 * `@detail_route` to `@action(detail=True)` @`views.py`s
-* `import detail_route, list_route` to `import action` @`views.py`s
+* `detail_route, list_route` to `action`  @`views.py`s
+    * use **`from rest_framework.decorators import action`** [if want `_` in URLs]
+    * use **`from apps.api.v1.decorators import action`**  [if want `-` in URLs]
 * `from django.core.urlresolvers import reverse` to `from django.urls import reverse` @ `mixins.py`
 ### Removed  or deprecated features and Backwards incompatible changes from libraries
 #### Django (`1.11.29` to `2.2.13`)
