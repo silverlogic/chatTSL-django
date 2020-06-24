@@ -1,30 +1,30 @@
 -r base.txt
 # code style
-black==19.3b0
-flake8==3.7.8
+black==19.10b0
+flake8==3.8.3
 isort==4.3.21
 
 # testing
-pytest==5.2.1
-pytest-cov==2.5.1
-pytest-django==3.5.1
+pytest==5.4.3
+pytest-cov==2.10.0
+pytest-django==3.9.0
 
 # test factories
-factory-boy==2.9.2
+factory-boy==2.12.0
 
 # fake data
-Faker==4.0.2
+Faker==4.1.0
 
 # prettier python prompt / manage.py shell
-ipython==6.2.1
-ipdb==0.10.3
+ipython==7.15.0
+ipdb==0.13.2
 
 # helpers
-dj-inmemorystorage==1.4.1
+dj-inmemorystorage==2.1.0
 
 # fake http requests
-httpretty==0.8.14
+httpretty==1.0.2
 
 # debug helper / performance monitoring
-django-debug-toolbar==1.9
-django-silk==2.0.0
+django-debug-toolbar==2.2
+django-silk==4.0.1
