@@ -3,7 +3,11 @@ jobs:
   test:
     docker:
       - image: silverlogic/python3.6
-      - image: silverlogic/postgres9.6
+      - image: silverlogic/postgres12.3
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ci
     working_directory: ~/repo
     steps:
       - checkout
