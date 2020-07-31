@@ -199,7 +199,7 @@ CELERY_BEAT_SCHEDULE = {
     "clean-up-social-auth-cache": {
         "task": "apps.social_auth_cache.tasks.clean_up_social_auth_cache",
         "schedule": timedelta(hours=1),
-        "options": {"expires": timedelta(minutes=30)},
+        "options": {"expires": 60 * 30},
     }
 }
 
