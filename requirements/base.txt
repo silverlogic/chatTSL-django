@@ -20,7 +20,7 @@ django-picklefield==3.0.1
 djmail==2.0.0
 
 # Django REST Framework
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 djangorestframework-expander==0.2.3
 git+https://github.com/silverlogic/drf-extra-fields.git@c5845d4de9873950d65bad3f487a6dc62f544e08
 rest-social-auth==4.2.0
