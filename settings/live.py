@@ -49,4 +49,5 @@ sentry_sdk.init(
     dsn=SENTRY_DSN,
     integrations=[sentry_logging, DjangoIntegration(), CeleryIntegration()],
     release=SENTRY_RELEASE,
+    send_default_pii=True,
 )
