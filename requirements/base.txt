@@ -39,3 +39,6 @@ python-dateutil==2.8.1
 
 # phone number parser
 phonenumbers==8.12.5
+
+# fixed urllib3 version to avoid httpretty issues
+urllib3==1.25.11
