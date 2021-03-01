@@ -19,7 +19,7 @@ MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + MIDDLEWARE
 DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": "apps.base.debug_toolbar.show_toolbar"}
 
 # Silk
-INSTALLED_APPS += ["silk"]
+INSTALLED_APPS += ["silk", "django_extensions"]
 MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE
 SILKY_PYTHON_PROFILER = True
 SILKY_PYTHON_PROFILER_BINARY = True
