@@ -17,6 +17,7 @@ Faker==4.1.0
 
 # prettier python prompt / manage.py shell
 ipython==7.15.0
+jedi==0.17.2
 ipdb==0.13.2
 
 # helpers
