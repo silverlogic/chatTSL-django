@@ -19,3 +19,8 @@ PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 
 # Celery
 CELERY_TASK_ALWAYS_EAGER = True
+
+# Logging
+LOGGING["loggers"] = {}
+LOGGING["handlers"].pop("file_django", None)
+LOGGING["handlers"].pop("file_celery", None)

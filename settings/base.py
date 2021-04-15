@@ -16,6 +16,7 @@ from .env import env
 BASE_DIR = pathlib.Path(__file__).parent.parent
 SETTINGS_DIR = BASE_DIR / "settings"
 APPS_DIR = BASE_DIR / "apps"
+LOGS_DIR = BASE_DIR.parent / "logs"
 
 ALLOWED_HOSTS = ["*"]  # Host checking done by web server.
 ROOT_URLCONF = "apps.urls"
@@ -143,10 +144,43 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "root": {"handlers": ["console"], "level": "INFO"},
-    "formatters": {"simple": {"format": "[%(name)s] [%(levelname)s] %(message)s"}},
-    "handlers": {"console": {"class": "logging.StreamHandler", "formatter": "simple"}},
+    "formatters": {
+        "simple": {"format": "[%(name)s] [%(levelname)s] %(message)s"},
+        "simple_date": {
+            "format": "[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s",
+            "datefmt": "%Y/%m/%d %H:%M:%S",
+        },
+    },
+    "handlers": {"console": {"class": "logging.StreamHandler", "formatter": "simple"},},
     "loggers": {},
 }
+
+LOGGING_FILE_HANDLERS = {
+    "file_django": {
+        "class": "logging.handlers.RotatingFileHandler",
+        "formatter": "simple_date",
+        "filename": LOGS_DIR / "web.log",
+        "maxBytes": 1024 * 1024 * 100,
+        "backupCount": 2,
+    },
+    "file_celery": {
+        "class": "logging.handlers.RotatingFileHandler",
+        "formatter": "simple_date",
+        "filename": LOGS_DIR / "worker.log",
+        "maxBytes": 1024 * 1024 * 100,
+        "backupCount": 2,
+    },
+}
+
+LOGGING_FILE_LOGGERS = {
+    "django": {"handlers": ["file_django"], "level": "INFO",},
+    "celery": {"handlers": ["file_celery"], "level": "INFO",},
+}
+
+LOGS_DIR_PRESENT = pathlib.Path(LOGS_DIR).exists()
+LOGGING["handlers"].update(LOGGING_FILE_HANDLERS if LOGS_DIR_PRESENT else {})
+LOGGING["loggers"] = LOGGING_FILE_LOGGERS if LOGS_DIR_PRESENT else {}
+
 
 # Allow requests from any domain.
 CORS_ORIGIN_ALLOW_ALL = True
