@@ -27,7 +27,7 @@ dj-inmemorystorage==2.1.0
 httpretty==1.0.2
 
 # debug helper / performance monitoring
-django-debug-toolbar==2.2
+django-debug-toolbar==3.2.1
 django-silk==4.0.1
 
 # UML
