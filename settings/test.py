@@ -24,3 +24,4 @@ CELERY_TASK_ALWAYS_EAGER = True
 LOGGING["loggers"] = {}
 LOGGING["handlers"].pop("file_django", None)
 LOGGING["handlers"].pop("file_celery", None)
+LOGGING["root"]["handlers"] = ["console"]

@@ -146,10 +146,7 @@ LOGGING = {
     "root": {"handlers": ["console"], "level": "INFO"},
     "formatters": {
         "simple": {"format": "[%(name)s] [%(levelname)s] %(message)s"},
-        "simple_date": {
-            "format": "[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s",
-            "datefmt": "%Y/%m/%d %H:%M:%S",
-        },
+        "json": {"()": "apps.base.logging.BaseJSONFormatter"},
     },
     "handlers": {"console": {"class": "logging.StreamHandler", "formatter": "simple"},},
     "loggers": {},
@@ -158,14 +155,14 @@ LOGGING = {
 LOGGING_FILE_HANDLERS = {
     "file_django": {
         "class": "logging.handlers.RotatingFileHandler",
-        "formatter": "simple_date",
+        "formatter": "json",
         "filename": LOGS_DIR / "web.log",
         "maxBytes": 1024 * 1024 * 100,
         "backupCount": 2,
     },
     "file_celery": {
         "class": "logging.handlers.RotatingFileHandler",
-        "formatter": "simple_date",
+        "formatter": "json",
         "filename": LOGS_DIR / "worker.log",
         "maxBytes": 1024 * 1024 * 100,
         "backupCount": 2,
@@ -180,6 +177,11 @@ LOGGING_FILE_LOGGERS = {
 LOGS_DIR_PRESENT = pathlib.Path(LOGS_DIR).exists()
 LOGGING["handlers"].update(LOGGING_FILE_HANDLERS if LOGS_DIR_PRESENT else {})
 LOGGING["loggers"] = LOGGING_FILE_LOGGERS if LOGS_DIR_PRESENT else {}
+LOGGING["root"]["handlers"] = (
+    LOGGING["root"]["handlers"] + ["file_django"]
+    if LOGS_DIR_PRESENT
+    else LOGGING["root"]["handlers"]
+)
 
 
 # Allow requests from any domain.
