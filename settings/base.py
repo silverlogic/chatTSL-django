@@ -5,7 +5,7 @@ import pathlib
 from collections import OrderedDict
 from datetime import timedelta
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 import dj_database_url
 from kombu import Exchange, Queue
@@ -121,6 +121,8 @@ TEMPLATES = [
 # https://github.com/kennethreitz/dj-database-url#url-schema
 DATABASES = {}
 DATABASES["default"] = dj_database_url.parse(env("DATABASE_URL"))
+
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/

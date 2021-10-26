@@ -1,10 +1,9 @@
 import json
-from urllib.parse import urlparse
+from urllib.parse import urljoin, urlparse
 
 from django.http import Http404, HttpResponse
 from django.utils.decorators import method_decorator
 from django.utils.encoding import iri_to_uri
-from django.utils.six.moves.urllib.parse import urljoin
 from django.views.decorators.cache import never_cache
 
 from requests import HTTPError
