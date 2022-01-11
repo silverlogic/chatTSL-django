@@ -28,7 +28,7 @@ httpretty==1.0.2
 
 # debug helper / performance monitoring
 django-debug-toolbar==3.2.1
-git+https://github.com/jazzband/django-silk.git@7e93d6caecc83f8aad7cdb152b578f27787a59cc#egg=django-silk
+django-silk==4.2.0
 
 # UML
 django-extensions==3.0.9
