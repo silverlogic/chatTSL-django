@@ -24,7 +24,7 @@ ipdb==0.13.2
 dj-inmemorystorage==2.1.0
 
 # fake http requests
-httpretty==1.0.2
+httpretty==1.1.4
 
 # debug helper / performance monitoring
 django-debug-toolbar==3.2.1
