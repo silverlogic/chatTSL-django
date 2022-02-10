@@ -16,7 +16,16 @@ STATIC_URL = "{url}/static/".format(url=URL)
 # Debug Toolbar
 INSTALLED_APPS += ["debug_toolbar"]
 MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + MIDDLEWARE
-DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": "apps.base.debug_toolbar.show_toolbar"}
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": "apps.base.debug_toolbar.show_toolbar",
+    "DISABLE_PANELS": [  # These panels slow down the app
+        "debug_toolbar.panels.sql.SQLPanel",
+        "debug_toolbar.panels.cache.CachePanel",
+        "debug_toolbar.panels.signals.SignalsPanel",
+        "debug_toolbar.panels.logging.LoggingPanel",
+        "debug_toolbar.panels.profiling.ProfilingPanel",
+    ],
+}
 
 # Silk
 INSTALLED_APPS += ["silk", "django_extensions"]
