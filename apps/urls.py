@@ -11,6 +11,10 @@ urlpatterns = [
 ]
 
 
+if settings.ENVIRONMENT in ["staging"]:
+    admin.site.site_header = "Django administration staging"
+
+
 if settings.DEBUG:
     import debug_toolbar
     from django.conf.urls.static import static
