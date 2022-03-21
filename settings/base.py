@@ -28,7 +28,6 @@ AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
 PASSWORD_HASHERS = ["django.contrib.auth.hashers.PBKDF2PasswordHasher"]
 
 # Sites
-DJANGO_ADMIN_HEADER = env("DJANGO_ADMIN_HEADER")
 URL = env("URL")
 FRONT_URL = env("FRONT_URL")
 FRONT_CONFIRM_EMAIL_URL = FRONT_URL + "/confirm-email/{id}/{token}"
