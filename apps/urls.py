@@ -19,7 +19,7 @@ if settings.ENVIRONMENT in ["development"]:
     admin.site.site_header = "Django administration development"
 
 
-if settings.ENVIRONMENT in ["development"]:
+if settings.ENVIRONMENT in ["production"]:
     admin.site.site_header = "Django administration production"
 
 
