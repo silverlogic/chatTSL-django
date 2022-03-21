@@ -11,7 +11,16 @@ urlpatterns = [
 ]
 
 
-admin.site.site_header = settings.DJANGO_ADMIN_HEADER
+if settings.ENVIRONMENT in ["staging"]:
+    admin.site.site_header = "Django administration staging"
+
+
+if settings.ENVIRONMENT in ["development"]:
+    admin.site.site_header = "Django administration development"
+
+
+if settings.ENVIRONMENT in ["development"]:
+    admin.site.site_header = "Django administration production"
 
 
 if settings.DEBUG:
