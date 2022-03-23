@@ -11,6 +11,9 @@ urlpatterns = [
 ]
 
 
+admin.site.site_header = f"Django administration {settings.ENVIRONMENT}"
+
+
 if settings.DEBUG:
     import debug_toolbar
     from django.conf.urls.static import static

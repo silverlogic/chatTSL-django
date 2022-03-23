@@ -40,6 +40,9 @@ INSTALLED_APPS += ["storages", "s3_folder_storage"]
 # Thumbnails
 THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
 
+# Environment
+ENVIRONMENT = env("SENTRY_ENVIRONMENT")
+
 # Sentry
 SENTRY_DSN = env("SENTRY_DSN")
 SENTRY_LOG_LEVEL = logging.INFO

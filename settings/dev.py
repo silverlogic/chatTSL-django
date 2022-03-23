@@ -27,6 +27,9 @@ DEBUG_TOOLBAR_CONFIG = {
     ],
 }
 
+# Environment
+ENVIRONMENT = "development"
+
 # Silk
 INSTALLED_APPS += ["silk", "django_extensions"]
 MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE

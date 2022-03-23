@@ -50,6 +50,7 @@ EMAIL_BACKEND = "djmail.backends.default.EmailBackend"
 DJMAIL_MAX_RETRY_NUMBER = 3
 
 INSTALLED_APPS = [
+    "apps.base",
     # Django
     "django.contrib.admin",
     "django.contrib.auth",
@@ -75,7 +76,6 @@ INSTALLED_APPS = [
     "constance.backends.database",
     # Base
     "apps.api",
-    "apps.base",
     "apps.referrals",
     "apps.social_auth_cache",
     "apps.users",
