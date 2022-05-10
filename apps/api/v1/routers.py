@@ -35,7 +35,7 @@ class DefaultRouter(DefaultRouter):
             detail=True,
         ),
         # Dynamically generated detail routes.
-        # Generated using @detail_route decorator on methods of the viewset.
+        # Generated using @action detail=True decorator on methods of the viewset.
         DynamicRoute(
             url=r"^{prefix}/{lookup}/{url_path}{trailing_slash}$",
             name="{basename}-{url_name}",
