@@ -41,6 +41,7 @@ jobs:
             export URL="http://localhost"
             export FRONT_URL="http://app.localhost"
             export BRANCHIO_KEY="key_test_pmEf8Pqmg05t4N1MamZw4egeyxahRfTj"
+            export REDIS_URL=""
             TEST_FILES=$(circleci tests glob "tests/**/test_*.py" | circleci tests split --split-by=timings)
             py.test --cov="apps" --junitxml=test-reports/junit.xml ${TEST_FILES}
       - store_test_results:

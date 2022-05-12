@@ -54,3 +54,11 @@ sentry_sdk.init(
     release=SENTRY_RELEASE,
     send_default_pii=True,
 )
+
+# Channels
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {"hosts": [env("REDIS_URL")]},
+    },
+}

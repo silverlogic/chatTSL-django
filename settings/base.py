@@ -21,6 +21,7 @@ LOGS_DIR = BASE_DIR.parent / "logs"
 ALLOWED_HOSTS = ["*"]  # Host checking done by web server.
 ROOT_URLCONF = "apps.urls"
 WSGI_APPLICATION = "apps.wsgi.application"
+ASGI_APPLICATION = "apps.asgi.application"
 
 # Auth
 AUTH_USER_MODEL = "users.User"
@@ -74,6 +75,7 @@ INSTALLED_APPS = [
     "phonenumber_field",
     "constance",
     "constance.backends.database",
+    "channels",
     # Base
     "apps.api",
     "apps.referrals",

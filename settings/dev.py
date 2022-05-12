@@ -36,3 +36,6 @@ MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE
 SILKY_PYTHON_PROFILER = True
 SILKY_PYTHON_PROFILER_BINARY = True
 SILKY_META = True
+
+# Channels
+CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
