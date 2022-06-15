@@ -81,6 +81,7 @@ INSTALLED_APPS = [
     "apps.referrals",
     "apps.social_auth_cache",
     "apps.users",
+    "apps.permissions",
     # Project
 ]
 
@@ -309,3 +310,6 @@ PHONENUMBER_DB_FORMAT = "E164"
 
 # BRANCH.IO
 BRANCHIO_KEY = env("BRANCHIO_KEY")
+
+# Permissions
+SUPERUSER_HAS_ALL_ACTION_PERMISSIONS = True
