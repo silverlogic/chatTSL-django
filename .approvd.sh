@@ -1,2 +1,2 @@
-project=todo
-app=todo
+project=lbirds
+app=api
