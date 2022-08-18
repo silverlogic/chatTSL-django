@@ -139,30 +139,16 @@ jobs:
       - image: silverlogic/python3.8
     working_directory: ~/repo
     steps:
+      # Deploy to production when merge to master
       - deploy:
           name: Deploy
           command: |
-            if [ -z "${CIRCLE_TAG}" ]; then
-              curl \
-                -XPOST \
-                --header "X-Rundeck-Auth-Token: $RUNDECK_AUTH_TOKEN" \
-                --header "Content-Type: application/json" \
-                --data "{\"options\": {\"version\": \"$CIRCLE_SHA1\"}}" \
-                "https://ops.tsl.io/api/18/job/$RUNDECK_STAGING_JOB_ID/executions"
-              curl \
-                -XPOST \
-                --header "X-Rundeck-Auth-Token: $RUNDECK_AUTH_TOKEN" \
-                --header "Content-Type: application/json" \
-                --data "{\"options\": {\"version\": \"$CIRCLE_SHA1\"}}" \
-                "https://ops.tsl.io/api/18/job/$RUNDECK_STAGING_DOCS_JOB_ID/executions"
-            else
-              curl \
-                -XPOST \
-                --header "X-Rundeck-Auth-Token: $RUNDECK_AUTH_TOKEN" \
-                --header "Content-Type: application/json" \
-                --data "{\"options\": {\"version\": \"$CIRCLE_TAG\"}}" \
-                "https://ops.tsl.io/api/18/job/$RUNDECK_PRODUCTION_JOB_ID/executions"
-            fi
+            curl \
+              -XPOST \
+              --header "X-Rundeck-Auth-Token: $RUNDECK_AUTH_TOKEN" \
+              --header "Content-Type: application/json" \
+              --data "{\"options\": {\"version\": \"$CIRCLE_TAG\"}}" \
+              "https://ops.tsl.io/api/18/job/$RUNDECK_PRODUCTION_JOB_ID/executions"
 
 workflows:
   version: 2
