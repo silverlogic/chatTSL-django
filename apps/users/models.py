@@ -83,7 +83,8 @@ class User(PermissionsMixin, AbstractBaseUser):
     permission_groups = models.ManyToManyField(
         "permissions.PermissionGroup", related_name="users", blank=True
     )
-
+    wallet = models.CharField(max_length=100, blank=True)
+    username = models.CharField(max_length=100, blank=True)
     objects = UserManager()
 
     USERNAME_FIELD = "email"

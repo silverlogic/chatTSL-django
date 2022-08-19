@@ -1,12 +1,18 @@
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
 
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, permissions, response, serializers, viewsets
 
 from apps.api.v1.decorators import action
 from apps.users.models import User
 
-from .serializers import ChangePasswordSerializer, ConfirmEmailSerializer, UserSerializer
+from .serializers import (
+    ChangePasswordSerializer,
+    ConfirmEmailSerializer,
+    UserPublicSerializer,
+    UserSerializer,
+)
 
 
 class UpdateSelfPermission(permissions.BasePermission):
@@ -29,13 +35,23 @@ class UsersViewSet(
         UpdateSelfPermission,
     ]
     queryset = User.objects.all().order_by("id")
-    filter_backends = (filters.SearchFilter,)
+    filter_backends = (
+        DjangoFilterBackend,
+        filters.SearchFilter,
+    )
     search_fields = ("first_name", "last_name")
 
     @action(detail=False, methods=["GET"], permission_classes=[permissions.IsAuthenticated])
     def me(self, request):
         user = request.user
         serializer = self.get_serializer(user)
+        return response.Response(serializer.data)
+
+    @action(detail=False, methods=["GET"], serializer_class=UserPublicSerializer)
+    def public(self, request):
+        user = request.GET.get("username", None)
+        user_instance = User.objects.get(username=user)
+        serializer = UserPublicSerializer(user_instance)
         return response.Response(serializer.data)
 
     @action(

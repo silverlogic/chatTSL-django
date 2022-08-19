@@ -35,6 +35,8 @@ class UserBaseSerializer(ModelSerializer):
             "first_name",
             "last_name",
             "permissions",
+            "wallet",
+            "username",
         )
         private_fields = (
             "email",

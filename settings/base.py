@@ -207,7 +207,7 @@ REST_FRAMEWORK = {
 }
 
 # Avatars
-AVATAR_GRAVATAR_DEFAULT = "mp"
+AVATAR_GRAVATAR_DEFAULT = "https://littlebirds.me/bird.png"
 AVATAR_STORAGE_DIR = "user-avatars"
 AVATAR_HASH_USERDIRNAMES = True
 AVATAR_EXPOSE_USERNAMES = False
