@@ -147,7 +147,6 @@ jobs:
               -XPOST \
               --header "X-Rundeck-Auth-Token: $RUNDECK_AUTH_TOKEN" \
               --header "Content-Type: application/json" \
-              --data "{\"options\": {\"version\": \"$CIRCLE_TAG\"}}" \
               "https://ops.tsl.io/api/18/job/$RUNDECK_PRODUCTION_JOB_ID/executions"
 
 workflows:
