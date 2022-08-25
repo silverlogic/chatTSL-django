@@ -4,6 +4,7 @@ import factory
 class UserFactory(factory.DjangoModelFactory):
     email = factory.Faker("email")
     password = factory.PostGenerationMethodCall("set_password", "default")
+    username = factory.Faker("user_name")
 
     class Meta:
         model = "users.User"
