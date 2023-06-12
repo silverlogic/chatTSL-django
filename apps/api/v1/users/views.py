@@ -48,7 +48,10 @@ class UsersViewSet(
         return response.Response(serializer.data)
 
     @action(
-        detail=False, methods=["GET"], permission_classes=[], serializer_class=UserPublicSerializer,
+        detail=False,
+        methods=["GET"],
+        permission_classes=[],
+        serializer_class=UserPublicSerializer,
     )
     def public(self, request):
         user = request.GET.get("username", None)

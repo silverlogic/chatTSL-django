@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     "apps.users",
     "apps.permissions",
     # Project
+    "apps.tettra",
 ]
 
 MIDDLEWARE = [
@@ -153,7 +154,9 @@ LOGGING = {
         "simple": {"format": "[%(name)s] [%(levelname)s] %(message)s"},
         "json": {"()": "apps.base.logging.BaseJSONFormatter"},
     },
-    "handlers": {"console": {"class": "logging.StreamHandler", "formatter": "simple"},},
+    "handlers": {
+        "console": {"class": "logging.StreamHandler", "formatter": "simple"},
+    },
     "loggers": {},
 }
 
@@ -175,8 +178,14 @@ LOGGING_FILE_HANDLERS = {
 }
 
 LOGGING_FILE_LOGGERS = {
-    "django": {"handlers": ["file_django"], "level": "INFO",},
-    "celery": {"handlers": ["file_celery"], "level": "INFO",},
+    "django": {
+        "handlers": ["file_django"],
+        "level": "INFO",
+    },
+    "celery": {
+        "handlers": ["file_celery"],
+        "level": "INFO",
+    },
 }
 
 LOGS_DIR_PRESENT = pathlib.Path(LOGS_DIR).exists()

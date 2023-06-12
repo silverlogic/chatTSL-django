@@ -15,9 +15,11 @@ admin.site.site_header = f"Django administration {settings.ENVIRONMENT}"
 
 
 if settings.DEBUG:
-    import debug_toolbar
-    from django.conf.urls.static import static
     from urllib.parse import urlparse
+
+    from django.conf.urls.static import static
+
+    import debug_toolbar
 
     media_url = urlparse(settings.MEDIA_URL)
     static_url = urlparse(settings.STATIC_URL)
