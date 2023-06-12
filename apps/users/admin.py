@@ -10,10 +10,21 @@ from .models import PasswordValidation, User
 class UserAdmin(UserAdmin):
     fieldsets = (
         (None, {"fields": ("email", "password", "date_joined", "last_login")}),
-        (_("Permissions"), {"fields": ("is_active", "is_superuser", "role", "permission_groups")},),
-        (_("Profile"), {"fields": (("first_name", "last_name"),)}),
+        (
+            _("Permissions"),
+            {"fields": ("is_active", "is_superuser", "role", "permission_groups")},
+        ),
+        (_("Profile"), {"fields": (("first_name", "last_name"), "wallet", "username")}),
     )
-    add_fieldsets = ((None, {"classes": ("wide",), "fields": ("email", "password1", "password2")}),)
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("email", "password1", "password2", "wallet", "username"),
+            },
+        ),
+    )
     form = UserChangeForm
     add_form = UserCreationForm
     list_display = (
@@ -21,6 +32,7 @@ class UserAdmin(UserAdmin):
         "email",
         "first_name",
         "last_name",
+        "username",
         "date_joined",
         "is_active",
         "is_superuser",

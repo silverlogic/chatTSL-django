@@ -43,6 +43,8 @@ class TestUsersRetrieve(ApiMixin):
             "first_name",
             "last_name",
             "permissions",
+            "wallet",
+            "username",
         }
         actual = set(r.data.keys())
         assert expected == actual
@@ -51,7 +53,7 @@ class TestUsersRetrieve(ApiMixin):
         user = f.UserFactory()
         r = user_client.get(self.reverse(kwargs={"pk": user.pk}))
         h.responseOk(r)
-        expected = {"id", "avatar", "first_name", "last_name", "permissions"}
+        expected = {"id", "avatar", "first_name", "last_name", "permissions", "username", "wallet"}
         actual = set(r.data.keys())
         assert expected == actual
 
@@ -233,3 +235,14 @@ class TestConfirmEmail(ApiMixin):
     def test_confirm_email_no_user(self, client, data):
         r = client.post(self.reverse(kwargs={"pk": self.user.pk + 1}), data)
         h.responseBadRequest(r)
+
+
+class TestPublicUserRetrieve(ApiMixin):
+    view_name = "users-public"
+
+    def test_can_retrieve_info(self, user_client):
+        f.UserFactory(first_name="John", last_name="Smith", username="jsmith")
+        f.UserFactory(first_name="Miriam", last_name="Vas", username="miriamvas")
+        r = user_client.get(self.reverse(query_params={"username": "miriamvas"}))
+        h.responseOk(r)
+        assert r.data["first_name"] == "Miriam"

@@ -13,6 +13,7 @@ class RegisterSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
     referral_code = serializers.CharField(required=False, allow_blank=True)
+    username = serializers.CharField(required=False, allow_blank=True)
 
     def validate_email(self, email):
         if User.objects.filter(email=email).exists():

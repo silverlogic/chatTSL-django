@@ -23,7 +23,11 @@ application = ProtocolTypeRouter(
     {
         "http": django_asgi_app,
         "websocket": TokenAuthMiddleware(
-            URLRouter([re_path(r"ws/users/$", UsersConsumer.as_asgi()),])
+            URLRouter(
+                [
+                    re_path(r"ws/users/$", UsersConsumer.as_asgi()),
+                ]
+            )
         ),
     }
 )

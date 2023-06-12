@@ -30,3 +30,8 @@ router.register(r"forgot-password/reset", ResetPasswordViewSet, basename="reset-
 from .change_email.views import ChangeEmailViewSet  # noqa
 
 router.register(r"change-email", ChangeEmailViewSet, basename="change-email")
+
+# Tettra
+from .tettra.views import TettraPageImportDumpViewSet  # noqa
+
+router.register(r"tettra/import-dump", TettraPageImportDumpViewSet, basename="tettra-import-dump")
