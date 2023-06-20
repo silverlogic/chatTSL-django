@@ -1,12 +1,14 @@
 import factory.faker
 import factory.fuzzy
 import faker
-from faker.providers import internet
+from faker.providers import internet, lorem
 
+from apps.chatbot.models import OpenAIChat, OpenAIChatMessage
 from apps.tettra.models import TettraPage
 
-url_faker = faker.Faker()
-url_faker.add_provider(internet)
+faker = faker.Faker()
+faker.add_provider(internet)
+faker.add_provider(lorem)
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -31,7 +33,7 @@ class PasswordValidationFactory(factory.DjangoModelFactory):
 
 
 class TokenFactory(factory.DjangoModelFactory):
-    user = factory.SubFactory(UserFactory)
+    user = factory.SubFactory("tests.factories.UserFactory")
 
     class Meta:
         model = "authtoken.Token"
@@ -84,7 +86,7 @@ class TettraPageFactory(factory.DjangoModelFactory):
     owner_id = factory.fuzzy.FuzzyInteger(1, 5)
     owner_name = factory.Faker("name")
     owner_email = factory.Faker("email")
-    url = url_faker.url()
+    url = faker.url()
     category_id = factory.fuzzy.FuzzyInteger(1, 5)
     category_name = factory.Faker("name")
     subcategory_id = factory.fuzzy.FuzzyInteger(1, 5)
@@ -93,3 +95,20 @@ class TettraPageFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = "tettra.TettraPage"
+
+
+class OpenAIChatFactory(factory.DjangoModelFactory):
+    user = factory.SubFactory(UserFactory)
+    model = factory.Faker("random_element", elements=[x[0] for x in OpenAIChat.MODELS])
+
+    class Meta:
+        model = "chatbot.OpenAIChat"
+
+
+class OpenAIChatMessageFactory(factory.DjangoModelFactory):
+    chat = factory.SubFactory(OpenAIChatFactory)
+    role = factory.Faker("random_element", elements=[x[0] for x in OpenAIChatMessage.ROLES])
+    content = faker.paragraphs(nb=5)
+
+    class Meta:
+        model = "chatbot.OpenAIChatMessage"

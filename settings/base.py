@@ -53,6 +53,7 @@ DJMAIL_MAX_RETRY_NUMBER = 3
 INSTALLED_APPS = [
     "apps.base",
     # Django
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -84,6 +85,7 @@ INSTALLED_APPS = [
     "apps.permissions",
     # Project
     "apps.tettra",
+    "apps.chatbot",
 ]
 
 MIDDLEWARE = [
@@ -322,3 +324,12 @@ BRANCHIO_KEY = env("BRANCHIO_KEY")
 
 # Permissions
 SUPERUSER_HAS_ALL_ACTION_PERMISSIONS = True
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {"hosts": [env("REDIS_URL")]},
+    },
+}
+
+# OpenAI
+OPENAI_API_KEY = env("OPENAI_API_KEY")

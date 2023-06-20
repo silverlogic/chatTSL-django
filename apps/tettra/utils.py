@@ -1,9 +1,17 @@
-import logging
+from __future__ import annotations
 
-import tiktoken
+import logging
+from typing import Any, Iterable, List, Optional, Type
+
+from django.db.models.manager import BaseManager
+
 from bs4 import BeautifulSoup
+from langchain.docstore.document import Document
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.text_splitter import TokenTextSplitter
+from langchain.vectorstores.base import VectorStore
 from numpy import array, average
-from sentence_transformers import SentenceTransformer
+from pgvector.django import CosineDistance
 
 from .models import TettraPage
 
@@ -20,9 +28,12 @@ def generate_vector_embeddings(tettra_page: TettraPage):
 
 def get_embedding(text):
     """Return a list of tuples (text_chunk, embedding) and an average embedding for a text."""
-    tokenizer = tiktoken.get_encoding("cl100k_base")
-    token_chunks = list(split_into_chunks(text, TEXT_EMBEDDING_CHUNK_SIZE, tokenizer))
-    text_chunks = [tokenizer.decode(chunk) for chunk in token_chunks]
+    text_splitter = TokenTextSplitter(
+        encoding_name="cl100k_base",
+        chunk_size=TEXT_EMBEDDING_CHUNK_SIZE,
+        chunk_overlap=int(TEXT_EMBEDDING_CHUNK_SIZE / 4),
+    )
+    text_chunks = text_splitter.split_text(text)
 
     try:
         embeddings = embed(text_chunks)
@@ -38,8 +49,13 @@ def embed(text_array):
     """
     Accepts string or list of strings
     """
-    model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-    return model.encode(text_array, show_progress_bar=False)
+    model_name = "sentence-transformers/all-MiniLM-L6-v2"
+    model_kwargs = {"device": "cpu"}
+    encode_kwargs = {"normalize_embeddings": False}
+    embeddings = HuggingFaceEmbeddings(
+        model_name=model_name, model_kwargs=model_kwargs, encode_kwargs=encode_kwargs
+    )
+    return embeddings.client.encode(text_array, show_progress_bar=False)
 
 
 def get_col_average_from_list_of_lists(list_of_lists):
@@ -52,27 +68,57 @@ def get_col_average_from_list_of_lists(list_of_lists):
         return average_embedding.tolist()
 
 
-# Split a text into smaller chunks of size n, preferably ending at the end of a sentence
-def split_into_chunks(text, n, tokenizer):
-    tokens = tokenizer.encode(text)
-    """Yield successive n-sized chunks from text."""
-    i = 0
-    while i < len(tokens):
-        # Find the nearest end of sentence within a range of 0.5 * n and 1.5 * n tokens
-        j = min(i + int(1.5 * n), len(tokens))
-        while j > i + int(0.5 * n):
-            # Decode the tokens and check for full stop or newline
-            chunk = tokenizer.decode(tokens[i:j])
-            if chunk.endswith(".") or chunk.endswith("\n"):
-                break
-            j -= 1
-        # If no end of sentence found, use n tokens as the chunk size
-        if j == i + int(0.5 * n):
-            j = min(i + n, len(tokens))
-        yield tokens[i:j]
-        i = j
-
-
 def get_text_to_embed(tettra_page: TettraPage):
     soup = BeautifulSoup(tettra_page.html, features="html.parser")
     return f"Title: {tettra_page.page_title} \n\n {soup.get_text()}"
+
+
+def find_similar(query: str) -> BaseManager[TettraPage]:
+    query_vector = get_embedding(query)
+    queryset = (
+        TettraPage.objects.annotate(cosine_distance=CosineDistance("embedding", query_vector))
+        .order_by("cosine_distance")
+        .filter(
+            cosine_distance__isnull=False,
+        )
+    )
+
+    return queryset
+
+
+class PreComputedEmbeddingVectorStore(VectorStore):
+    """
+    A custom vector store where the raw embeddings are passed,
+    so they don't need to be calculated again
+    """
+
+    def __init__(self, queryset) -> PreComputedEmbeddingVectorStore:
+        self.queryset = queryset
+
+    @classmethod
+    def from_texts(
+        cls: Type[PreComputedEmbeddingVectorStore],
+        texts: List[str],
+        embedding: Any,
+        metadatas: Optional[List[dict]] = None,
+        **kwargs: Any,
+    ) -> PreComputedEmbeddingVectorStore:
+        pass
+
+    def add_texts(
+        self,
+        texts: Iterable[str],
+        metadatas: Optional[List[dict]] = None,
+        ids: Optional[List[str]] = None,
+        **kwargs: Any,
+    ) -> List[str]:
+        pass
+
+    def similarity_search(
+        self,
+        query: str,
+        k: int = 4,
+        filter: Optional[dict] = None,
+        **kwargs: Any,
+    ) -> List[Document]:
+        return [Document(page_content=get_text_to_embed(i)) for i in self.queryset]

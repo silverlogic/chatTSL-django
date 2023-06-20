@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from django.db import models
 
 from model_utils import FieldTracker
@@ -34,7 +36,9 @@ class TettraPage(models.Model):
 
         with self.tracker:
             super().save(*args, **kwargs)
-            if self.id is None or any(
-                [self.tracker.has_changed("page_title"), self.tracker.has_changed("html")]
+            if (
+                self.id is None
+                or self.embedding is None
+                or any([self.tracker.has_changed("page_title"), self.tracker.has_changed("html")])
             ):
                 generate_vector_embeddings.delay(tettra_page=self.id)

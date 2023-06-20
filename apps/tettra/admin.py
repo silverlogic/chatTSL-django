@@ -6,8 +6,15 @@ from .models import TettraPage
 
 @admin.register(TettraPage)
 class TettraPageAdmin(admin.ModelAdmin):
+    @admin.action(description="Refresh Embeddings")
+    def refresh_embeddings(modeladmin, request, queryset):
+        queryset.update(embedding=None)
+        for instance in queryset:
+            instance.save()
+
     list_display = ("id", "page_id", "page_title", "url", "has_embedding")
     readonly_fields = ("embedding",)
+    actions = [refresh_embeddings]
 
     def get_queryset(self, request):
         return (
@@ -15,7 +22,7 @@ class TettraPageAdmin(admin.ModelAdmin):
             .get_queryset(request=request)
             .annotate(
                 has_embedding=ExpressionWrapper(
-                    Q(embedding__isnull=True), output_field=BooleanField()
+                    Q(embedding__isnull=False), output_field=BooleanField()
                 )
             )
         )

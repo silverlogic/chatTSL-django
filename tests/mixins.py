@@ -25,3 +25,10 @@ class ApiMixin:
             url += "?" + urllib.parse.urlencode(query_params, doseq=True)
 
         return url
+
+    def channels_reverse(self, viewname, args=None, kwargs=None):
+        return reverse(
+            viewname,
+            args=args,
+            kwargs=kwargs,
+        )

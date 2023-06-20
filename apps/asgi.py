@@ -5,29 +5,22 @@ isort:skip_file
 """
 
 from django.core.asgi import get_asgi_application
-from django.urls import re_path
 
 from channels.routing import ProtocolTypeRouter
 
 from channels.routing import URLRouter
-from apps.api.channels import TokenAuthMiddleware
+
+from apps.api.channels import TokenAuthMiddleware  # noqa
+from apps.api.ws.urls import websocket_urlpatterns  # noqa
 
 django_asgi_app = get_asgi_application()
-
-# we need to load all applications before we can import from the apps
-
-from apps.api.v1.users.channels import UsersConsumer  # noqa
-
-
 application = ProtocolTypeRouter(
-    {
-        "http": django_asgi_app,
-        "websocket": TokenAuthMiddleware(
-            URLRouter(
-                [
-                    re_path(r"ws/users/$", UsersConsumer.as_asgi()),
-                ]
-            )
-        ),
-    }
+    {"http": django_asgi_app, "websocket": TokenAuthMiddleware(URLRouter(websocket_urlpatterns))}
 )
+
+from django.conf import settings  # noqa
+
+if settings.ENVIRONMENT in ["production", "staging"]:
+    from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
+
+    application = SentryAsgiMiddleware(application)
