@@ -4,6 +4,7 @@ from channels.testing import WebsocketCommunicator
 from apps.asgi import application
 
 pytestmark = pytest.mark.django_db
+from rest_framework import RemovedInDRF315Warning
 
 
 class TestUsersChannels:
