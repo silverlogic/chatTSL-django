@@ -1,5 +1,6 @@
 import json
 import logging
+from typing import Any
 
 from django.conf import settings
 
@@ -14,10 +15,8 @@ logger = logging.getLogger(__name__)
 
 
 class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
-    from apps.chatbot.models import OpenAIChat
-
     chat_id: int
-    chat: OpenAIChat
+    chat: Any
     group_name: str
 
     def __init__(self, *args, **kwargs):
