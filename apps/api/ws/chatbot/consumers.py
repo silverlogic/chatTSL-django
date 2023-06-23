@@ -134,7 +134,7 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
                         footer = (
                             "\n\nQuestion: "
                             + _content
-                            + "\n\nReturn detailed answers that explain a process in multiple steps in html format."
+                            + "\n\nReturn detailed answers in html format."
                         )
                         _content = (
                             header
@@ -148,7 +148,7 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
                 messages.insert(
                     0,
                     SystemMessage(
-                        content="You are a helpful assistant. Return detailed answers that explain a process in multiple steps."
+                        content="You are a helpful assistant at The SilverLogic. Return detailed answers that explain a process at The SilverLogic."
                     ),
                 )
                 logger.error(f"----------{self.chat_id}----------")
