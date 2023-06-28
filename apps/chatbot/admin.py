@@ -11,3 +11,4 @@ class OpenAIChatAdmin(admin.ModelAdmin):
 @admin.register(OpenAIChatMessage)
 class OpenAIChatMessageAdmin(admin.ModelAdmin):
     list_display = ("id", "chat", "role", "content")
+    filter_horizontal = ("tettra_pages",)

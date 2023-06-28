@@ -28,10 +28,17 @@ class OpenAIChatMessage(models.Model):
         ("user", _("user")),
         ("assistant", _("assistant")),
     )
+    MAX_TETTRA_PAGES = 3
 
     chat = models.ForeignKey(OpenAIChat, related_name="messages", on_delete=models.CASCADE)
     role = models.CharField(null=False, blank=False, max_length=9, choices=ROLES)
     content = models.TextField(null=False, blank=False)
+    tettra_pages = models.ManyToManyField(
+        "tettra.TettraPage",
+        related_name="tettra_pages",
+        help_text=_("Similar tettra pages to the content of this message."),
+        blank=True,
+    )
 
     @property
     def LangchainSchemaMessageClass(self) -> Type[BaseMessage]:

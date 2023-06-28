@@ -9,7 +9,7 @@ from channels.exceptions import StopConsumer
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import SystemMessage
-from rest_framework import exceptions
+from rest_framework import exceptions, serializers
 
 logger = logging.getLogger(__name__)
 
@@ -63,10 +63,15 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
 
     @database_sync_to_async
     def get_similar_tettra_pages(self, text: str):
+        from apps.chatbot.models import OpenAIChatMessage
         from apps.tettra.utils import find_similar
 
         queryset = find_similar(text).filter(cosine_distance__lt=0.6)
-        return list(queryset[:3])
+        return list(queryset[: OpenAIChatMessage.MAX_TETTRA_PAGES])
+
+    @database_sync_to_async
+    def get_serializer_data(self, serializer: serializers.ModelSerializer):
+        return serializer.data
 
     async def receive(self, text_data=None, bytes_data=None, **kwargs):
         from apps.api.v1.chatbot.serializers import OpenAIChatMessageSerializer
@@ -83,6 +88,8 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
         except Exception:
             logger.error(f"Failed to convert text to json {text_data}")
             return
+
+        logger.info("{:-^100s}".format(f"BEGIN {self.receive.__name__}(chat_id:{self.chat_id})"))
 
         try:
             input_event_serializer.is_valid(raise_exception=True)
@@ -111,7 +118,7 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
                 output_event_serializer = OutputEventSerializer(
                     data=dict(
                         event_type=OUTPUT_EVENT_TYPE.on_message_created,
-                        event_data=user_chat_message_serializer.data,
+                        event_data=await self.get_serializer_data(user_chat_message_serializer),
                     )
                 )
                 output_event_serializer.is_valid(raise_exception=True)
@@ -131,11 +138,7 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
                     _content = chat_message.content
                     if chat_message.id == user_chat_message.id and len(tettra_pages) > 0:
                         header = "Answer the question using the provided context.\n\nContext:\n"
-                        footer = (
-                            "\n\nQuestion: "
-                            + _content
-                            + "\n\nReturn detailed answers in html format."
-                        )
+                        footer = "\n\nQuestion: " + _content
                         _content = (
                             header
                             + " ".join(
@@ -148,24 +151,24 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
                 messages.insert(
                     0,
                     SystemMessage(
-                        content="You are a helpful assistant at The SilverLogic. Return detailed answers that explain a process at The SilverLogic."
+                        content="You are a helpful assistant at The SilverLogic. Return detailed answers that explain a process. Return html text that uses h3 tag for headers, p tag for body, ol or ul tags for lists."
                     ),
                 )
-                logger.error(f"----------{self.chat_id}----------")
                 for message in messages:
-                    logger.error(message.content)
-                logger.error(f"----------{self.chat_id}----------")
+                    logger.info(message.content)
 
                 chat_response = chat(messages)
+
                 ai_chat_message = await self.create_chat_message(
                     dict(role=OpenAIChatMessage.ROLES.assistant, content=chat_response.content)
                 )
+                await database_sync_to_async(ai_chat_message.tettra_pages.set)(tettra_pages)
                 ai_chat_message_serializer = OpenAIChatMessageSerializer(instance=ai_chat_message)
 
                 output_event_serializer = OutputEventSerializer(
                     data=dict(
                         event_type=OUTPUT_EVENT_TYPE.on_message_created,
-                        event_data=ai_chat_message_serializer.data,
+                        event_data=await self.get_serializer_data(ai_chat_message_serializer),
                     )
                 )
                 output_event_serializer.is_valid(raise_exception=True)
@@ -174,7 +177,20 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
             logger.error(json.dumps(e.get_full_details(), indent=4))
 
             output_event_serializer = OutputEventSerializer(
-                data=dict(event_type=OUTPUT_EVENT_TYPE.event_data, event_data=e.get_full_details())
+                data=dict(event_type=OUTPUT_EVENT_TYPE.on_error, event_data=e.get_full_details())
             )
             output_event_serializer.is_valid(raise_exception=True)
             await self.send_json(output_event_serializer.validated_data)
+        except BaseException as e:
+            logging.critical(e, exc_info=True)
+
+            output_event_serializer = OutputEventSerializer(
+                data=dict(
+                    event_type=OUTPUT_EVENT_TYPE.on_error,
+                    event_data={"error": ["An unknown error has occured. See logs for details."]},
+                )
+            )
+            output_event_serializer.is_valid(raise_exception=True)
+            await self.send_json(output_event_serializer.validated_data)
+
+        logger.info("{:-^100s}".format(f"END {self.receive.__name__}(chat_id:{self.chat_id})"))
