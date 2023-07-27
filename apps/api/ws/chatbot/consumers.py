@@ -51,9 +51,8 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
     def create_chat_message(self, data):
         from apps.api.v1.chatbot.serializers import OpenAIChatMessageSerializer
 
-        serializer = OpenAIChatMessageSerializer(
-            data=dict(**data, chat=self.chat_id), context=dict(scope=self.scope)
-        )
+        data = dict(**data, chat=self.chat_id)
+        serializer = OpenAIChatMessageSerializer(data=data, context=dict(scope=self.scope))
         serializer.is_valid(raise_exception=True)
         return serializer.save()
 
@@ -62,12 +61,12 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
         return list(self.chat.messages.all())
 
     @database_sync_to_async
-    def get_similar_tettra_pages(self, text: str):
+    def get_similar_tettra_page_chunks(self, text: str):
         from apps.chatbot.models import OpenAIChatMessage
         from apps.tettra.utils import find_similar
 
         queryset = find_similar(text).filter(cosine_distance__lt=0.6)
-        return list(queryset[: OpenAIChatMessage.MAX_TETTRA_PAGES])
+        return list(queryset[: OpenAIChatMessage.MAX_TETTRA_PAGE_CHUNKS])
 
     @database_sync_to_async
     def get_serializer_data(self, serializer: serializers.ModelSerializer):
@@ -76,7 +75,6 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
     async def receive(self, text_data=None, bytes_data=None, **kwargs):
         from apps.api.v1.chatbot.serializers import OpenAIChatMessageSerializer
         from apps.chatbot.models import OpenAIChatMessage
-        from apps.tettra.utils import get_text_to_embed
 
         from .serializers import InputEventSerializer, OutputEventSerializer
         from .types import INPUT_EVENT_TYPE, OUTPUT_EVENT_TYPE
@@ -124,9 +122,11 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
                 output_event_serializer.is_valid(raise_exception=True)
                 await self.send_json(output_event_serializer.validated_data)
 
-                tettra_pages = await self.get_similar_tettra_pages(user_chat_message.content)
+                tettra_page_chunks = await self.get_similar_tettra_page_chunks(
+                    user_chat_message.content
+                )
                 logger.info(
-                    f'Using similar tettra pages as context: {[f"{t.id} {t.cosine_distance}" for t in tettra_pages]}',
+                    f'Using similar tettra page chunks as context: {[f"{t.id} {t.cosine_distance}" for t in tettra_page_chunks]}',
                 )
 
                 chat = ChatOpenAI(
@@ -136,13 +136,16 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
                 messages = []
                 for chat_message in chat_messages:
                     _content = chat_message.content
-                    if chat_message.id == user_chat_message.id and len(tettra_pages) > 0:
+                    if chat_message.id == user_chat_message.id and len(tettra_page_chunks) > 0:
                         header = "Answer the question using the provided context.\n\nContext:\n"
                         footer = "\n\nQuestion: " + _content
                         _content = (
                             header
-                            + " ".join(
-                                [get_text_to_embed(tettra_page) for tettra_page in tettra_pages]
+                            + "\n\n".join(
+                                [
+                                    tettra_page_chunk.content
+                                    for tettra_page_chunk in tettra_page_chunks
+                                ]
                             )
                             + footer
                         )
@@ -162,7 +165,9 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
                 ai_chat_message = await self.create_chat_message(
                     dict(role=OpenAIChatMessage.ROLES.assistant, content=chat_response.content)
                 )
-                await database_sync_to_async(ai_chat_message.tettra_pages.set)(tettra_pages)
+                await database_sync_to_async(ai_chat_message.tettra_page_chunks.set)(
+                    tettra_page_chunks
+                )
                 ai_chat_message_serializer = OpenAIChatMessageSerializer(instance=ai_chat_message)
 
                 output_event_serializer = OutputEventSerializer(

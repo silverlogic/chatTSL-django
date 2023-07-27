@@ -1,0 +1,199 @@
+pipeline {
+    agent {
+        kubernetes {
+            cloud 'kubernetes'
+            yamlFile '.jenkins/build-pod.yml'
+            defaultContainer 'python3'
+        }
+    }
+
+    environment {
+        BRANCH = "${env.BRANCH_NAME}"
+        WORKSPACE = "${env.WORKSPACE}"
+        RUNDECK_STAGING_JOB_ID = "5cd60137-b97a-4831-a2b4-604821e7a3b8"
+    }
+
+    stages {
+        stage('Setup') {
+            steps {
+            cache(defaultBranch: 'master', caches: [
+              arbitraryFileCache(path: '../venv', cacheValidityDecidingFile: 'requirements/*.txt')
+                ]) {
+                  sh '''
+                  apt-get update
+                  apt-get install -y poppler-utils python3-psycopg2 postgis python3-pygraphviz graphviz graphviz-dev libgraphviz-dev
+                  python3 -m venv ../venv
+                  . ../venv/bin/activate
+                  pip install -r requirements/dev.txt
+                  '''
+                }
+            }
+        }
+        stage("Test & Lint & Safety") {
+            parallel {
+                stage("Test") {
+                    steps {
+                        bitbucketStatusNotify(buildState: 'INPROGRESS', buildKey: 'test', buildName: 'Tests')
+                        script {
+                            try {
+                                sh '''
+                                . ../venv/bin/activate
+                                py.test --junitxml=test-reports/junit.xml --cov-report xml:test-reports/coverage.xml --cov=apps
+                                '''
+                                withChecks('Integration Tests') {
+                                    junit 'test-reports/junit.xml'
+                                }
+                            } catch (Exception e) {
+                                bitbucketStatusNotify(buildState: 'FAILED', buildKey: 'test', buildName: 'Tests')
+                                withChecks('Integration Tests') {
+                                  junit 'test-reports/junit.xml'
+                                }
+                                throw e
+                            }
+                        }
+                        bitbucketStatusNotify(buildState: 'SUCCESSFUL', buildKey: 'test', buildName: 'Tests')
+                    }
+                }
+                stage("Flake8") {
+                    steps {
+                        bitbucketStatusNotify(buildState: 'INPROGRESS', buildKey: 'flake8', buildName: 'Flake8')
+                        script {
+                            try {
+                                sh '''
+                                . ../venv/bin/activate
+                                flake8
+                                '''
+                            } catch (Exception e) {
+                                bitbucketStatusNotify(buildState: 'FAILED', buildKey: 'flake8', buildName: 'Flake8')
+                                throw e
+                            }
+                        }
+                        bitbucketStatusNotify(buildState: 'SUCCESSFUL', buildKey: 'flake8', buildName: 'Flake8')
+                    }
+                }
+                stage("Isort") {
+                    steps {
+                        bitbucketStatusNotify(buildState: 'INPROGRESS', buildKey: 'isort', buildName: 'Isort')
+                        script {
+                            try {
+                                sh '''
+                                . ../venv/bin/activate
+                                isort --check .
+                                '''
+                            } catch (Exception e) {
+                                bitbucketStatusNotify(buildState: 'FAILED', buildKey: 'isort', buildName: 'Isort')
+                                throw e
+                            }
+                        }
+                        bitbucketStatusNotify(buildState: 'SUCCESSFUL', buildKey: 'isort', buildName: 'Isort')
+                    }
+                }
+                stage("Black") {
+                    steps {
+                        bitbucketStatusNotify(buildState: 'INPROGRESS', buildKey: 'black', buildName: 'Black')
+                        script {
+                            try {
+                                sh '''
+                                . ../venv/bin/activate
+                                 black --check .
+                                '''
+                            } catch (Exception e) {
+                                bitbucketStatusNotify(buildState: 'FAILED', buildKey: 'black', buildName: 'Black')
+                                throw e
+                            }
+                        }
+                        bitbucketStatusNotify(buildState: 'SUCCESSFUL', buildKey: 'black', buildName: 'Black')
+                    }
+                }
+                stage('SonarQube Analysis') {
+                    steps {
+                        container('jnlp') {
+                            script {
+                                def scannerHome = tool 'SonarQubeScanner';
+                                withSonarQubeEnv() {
+                                    sh "${scannerHome}/bin/sonar-scanner"
+                                }
+                            }
+                        }
+                    }
+                }
+                stage("Safety") {
+                    steps {
+                        bitbucketStatusNotify(buildState: 'INPROGRESS', buildKey: 'safety', buildName: 'Security-check')
+                        script {
+                            try {
+                                sh '''
+                                . ../venv/bin/activate
+                                pip install -U pip
+                                pip install safety
+                                safety check -r requirements/base.txt -r requirements/dev.txt -r requirements/live.txt -r requirements/flower.txt
+                                '''
+                            } catch (Exception e) {
+                                bitbucketStatusNotify(buildState: 'FAILED', buildKey: 'safety', buildName: 'Security-check')
+                                throw e
+                            }
+                        }
+                        bitbucketStatusNotify(buildState: 'SUCCESSFUL', buildKey: 'safety', buildName: 'Security-check')
+                    }
+                }
+            }
+        }
+
+        // cluster autodeplyment via Jenkins job - uncomment if project is deployed on Kubernetes
+        // stage("Cluster Deploy") {
+        //     when {
+        //         expression {
+        //             // when testing Jenkins updates on a PR, use env.CHANGE_BRANCH instead of env.GIT_BRANCH
+        //             return env.GIT_BRANCH == "master"
+        //         }
+        //     }
+        //     steps {
+        //         script {
+        //             def repoName = env.GIT_URL.replaceFirst(/^.*\/([^\/]+?).git$/, '$1')
+        //             if(env.GIT_BRANCH == "master") {
+        //                 def repoBranch = env.GIT_BRANCH
+        //                 def registryTag = "${env.GIT_COMMIT}"
+        //                 def gitopsEnv = "staging"
+        //                 build(
+        //                     job: 'cluster-env-deploy',
+        //                     parameters: [
+        //                         // TODO: replace 'base' with project's short name
+        //                         string(name: 'registryProject', value: 'base'),
+        //                         string(name: 'registryRepositories', value: 'base-django:live'),
+        //                         string(name: 'registrySourceTag', value: registryTag),
+        //                         string(name: 'gitopsEnv', value: gitopsEnv),
+        //                         string(name: 'gitopsImageKeys', value: "django_image"),
+        //                         string(name: 'buildRepoName', value: repoName),
+        //                         string(name: 'buildRepoBranch', value: repoBranch),
+        //                     ],
+        //                 )
+        //             }
+        //         }
+        //     }
+        // }
+    }
+
+    post {
+        success {
+            // replace with "Cluster Deploy" step if project is deployed on Kubernetes
+            withCredentials([string(credentialsId: 'Rundeck', variable: 'RUNDECK_AUTH_TOKEN')]) {
+                script {
+                    if(BRANCH == "master") {
+                        sh '''
+                        curl \
+                            -XPOST \
+                            --header "X-Rundeck-Auth-Token: $RUNDECK_AUTH_TOKEN" \
+                            --header "Content-Type: application/json" \
+                            --data "{\"options\": {\"version\": \"$GIT_COMMIT\"}}" \
+                            "https://ops.tsl.io/api/18/job/$RUNDECK_STAGING_JOB_ID/executions"
+                        '''
+                    }
+                }
+            }
+        }
+        always {
+            junit 'test-reports/junit.xml'
+            cobertura coberturaReportFile: 'test-reports/coverage.xml', failUnhealthy: true, failUnstable: true, lineCoverageTargets: '80'
+        }
+    }
+}

@@ -19,11 +19,6 @@ class TettraPage(models.Model):
     subcategory_name = models.CharField(max_length=255)
     html = models.TextField()
 
-    embedding = VectorField(
-        dimensions=384, null=True, blank=True
-    )  # the dimension is the size of the vector returned
-    # by the model https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
-
     tracker = FieldTracker(
         fields=[
             "page_title",
@@ -38,7 +33,18 @@ class TettraPage(models.Model):
             super().save(*args, **kwargs)
             if (
                 self.id is None
-                or self.embedding is None
+                or not self.chunks.exists()
                 or any([self.tracker.has_changed("page_title"), self.tracker.has_changed("html")])
             ):
+                self.chunks.all().delete()
                 generate_vector_embeddings.delay(tettra_page=self.id)
+
+
+class TettraPageChunk(models.Model):
+    tettra_page = models.ForeignKey(TettraPage, related_name="chunks", on_delete=models.CASCADE)
+
+    content = models.TextField()
+    embedding = VectorField(
+        dimensions=384, null=True, blank=True
+    )  # the dimension is the size of the vector returned
+    # by the model https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2

@@ -37,6 +37,9 @@ from .tettra.views import TettraPageImportDumpViewSet  # noqa
 router.register(r"tettra/import-dump", TettraPageImportDumpViewSet, basename="tettra-import-dump")
 
 # Chatbot
-from .chatbot.views import OpenAIChatViewSet  # noqa
+from .chatbot.views import OpenAIChatViewSet, OpenAIChatMessageViewSet  # noqa
 
 router.register(r"chatbot/open-ai", OpenAIChatViewSet, basename="chatbot-open-ai")
+router.register(
+    r"chatbot/open-ai-messages", OpenAIChatMessageViewSet, basename="chatbot-open-ai-messages"
+)

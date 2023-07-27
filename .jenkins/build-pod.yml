@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: postgres
+    image: silverlogic/postgres12.3
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 250m
+      limits:
+        memory: 2Gi
+        cpu: 1000m
+    env:
+    - name: POSTGRES_USER
+      value: postgres
+    - name: POSTGRES_PASSWORD
+      value: postgres
+    - name: POSTGRES_DB
+      value: ci
+    ports:
+      - containerPort: 5432
+    tty: true
+  - name: python3
+    image: python:3.9
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 250m
+      limits:
+        memory: 3Gi
+        cpu: 1000m
+    command:
+    - cat
+    tty: true
+    env:
+    - name: SECRET_KEY
+      value: nosecret
+    - name: DATABASE_URL
+      value: postgis://postgres:postgres@localhost/ci
+    - name: CELERY_BROKER_URL
+      value: N/A
+    - name: CELERY_RESULTS_URL
+      value: N/A
+    - name: URL
+      value: http://localhost
+    - name: FRONT_URL
+      value: http://app.localhost
+    - name: BRANCHIO_KEY
+      value: key_test_pmEf8Pqmg05t4N1MamZw4egeyxahRfTj
+    - name: REDIS_URL
+      value:
+    - name: OPENAI_API_KEY
+      value: 1234

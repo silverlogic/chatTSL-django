@@ -97,6 +97,14 @@ class TettraPageFactory(factory.DjangoModelFactory):
         model = "tettra.TettraPage"
 
 
+class TettraPageChunkFactory(factory.DjangoModelFactory):
+    tettra_page = factory.SubFactory(TettraPageFactory)
+    content = factory.fuzzy.FuzzyText()
+
+    class Meta:
+        model = "tettra.TettraPageChunk"
+
+
 class OpenAIChatFactory(factory.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     model = factory.Faker("random_element", elements=[x[0] for x in OpenAIChat.MODELS])
