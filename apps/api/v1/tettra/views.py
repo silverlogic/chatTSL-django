@@ -19,25 +19,38 @@ class TettraPageImportDumpViewSet(viewsets.GenericViewSet):
         file: InMemoryUploadedFile = serializer.validated_data["file"]
         content: str = file.read()
         data = json.loads(content)
-        pages_updated = 0
-        pages_created = 0
+        response_data = dict()
 
         for tettra_page_data in data:
             tettra_page_data["page_id"] = tettra_page_data.get("id", -1)
-            try:
-                page_id = tettra_page_data["page_id"]
-                serializer = TettraPageSerializer(
-                    TettraPage.objects.get(page_id=page_id), data=tettra_page_data, partial=True
-                )
-                pages_updated += 1
-            except TettraPage.DoesNotExist:
-                serializer = TettraPageSerializer(data=tettra_page_data, partial=True)
-                pages_created += 1
+            page_id = tettra_page_data["page_id"]
+            if any(
+                [
+                    tettra_page_data.get("category_id", None) is None,
+                    tettra_page_data.get("category_name", None) is None,
+                ]
+            ):
+                response_data[page_id] = "Skipping because of null category"
+            elif tettra_page_data.get("deleted_at", None) is not None:
+                TettraPage.objects.filter(page_id=page_id).delete()
+                response_data[page_id] = "Deleted"
+            else:
+                try:
+                    serializer = TettraPageSerializer(
+                        TettraPage.objects.get(page_id=page_id), data=tettra_page_data, partial=True
+                    )
+                    response_data[page_id] = "Updated"
+                except TettraPage.DoesNotExist:
+                    serializer = TettraPageSerializer(data=tettra_page_data, partial=True)
+                    response_data[page_id] = "Created"
 
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
+                try:
+                    serializer.is_valid(raise_exception=True)
+                    serializer.save()
+                except BaseException as e:
+                    response_data[page_id] = str(e)
 
         return response.Response(
-            dict(pages_created=pages_created, pages_updated=pages_updated),
-            status=status.HTTP_201_CREATED,
+            response_data,
+            status=status.HTTP_200_OK,
         )

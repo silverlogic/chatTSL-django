@@ -15,8 +15,8 @@ class TettraPage(models.Model):
     url = models.URLField()
     category_id = models.IntegerField()
     category_name = models.CharField(max_length=255)
-    subcategory_id = models.IntegerField()
-    subcategory_name = models.CharField(max_length=255)
+    subcategory_id = models.IntegerField(null=True, blank=True)
+    subcategory_name = models.CharField(max_length=255, null=True, blank=True)
     html = models.TextField()
 
     tracker = FieldTracker(
@@ -28,6 +28,10 @@ class TettraPage(models.Model):
 
     def save(self, *args, **kwargs):
         from .tasks import generate_vector_embeddings
+
+        if self.subcategory_id is None or self.subcategory_name is None:
+            self.subcategory_id = None
+            self.subcategory_name = None
 
         with self.tracker:
             super().save(*args, **kwargs)
