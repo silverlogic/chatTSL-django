@@ -4,9 +4,11 @@ from typing import Any
 
 from django.conf import settings
 
+from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from channels.exceptions import StopConsumer
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from constance import config
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import SystemMessage
 from rest_framework import exceptions, serializers
@@ -65,12 +67,18 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
         from apps.chatbot.models import OpenAIChatMessage
         from apps.tettra.utils import find_similar
 
-        queryset = find_similar(text).filter(cosine_distance__lt=0.6)
+        filter_value = getattr(config, "OPEN_AI_CHAT_CONSUMER__COSINE_DISTANCE_FILTER")
+
+        queryset = find_similar(text).filter(cosine_distance__lt=filter_value)
         return list(queryset[: OpenAIChatMessage.MAX_TETTRA_PAGE_CHUNKS])
 
     @database_sync_to_async
     def get_serializer_data(self, serializer: serializers.ModelSerializer):
         return serializer.data
+
+    @sync_to_async
+    def get_constance_config_attr(self, attr: str):
+        return getattr(config, attr)
 
     async def receive(self, text_data=None, bytes_data=None, **kwargs):
         from apps.api.v1.chatbot.serializers import OpenAIChatMessageSerializer
@@ -137,8 +145,13 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
                 for chat_message in chat_messages:
                     _content = chat_message.content
                     if chat_message.id == user_chat_message.id and len(tettra_page_chunks) > 0:
-                        header = "Answer the question using the provided context.\n\nContext:\n"
-                        footer = "\n\nQuestion: " + _content
+                        header = await self.get_constance_config_attr(
+                            "OPEN_AI_CHAT_CONSUMER__LATEST_USER_MESSAGE_HEADER"
+                        )
+                        footer = await self.get_constance_config_attr(
+                            "OPEN_AI_CHAT_CONSUMER__LATEST_USER_MESSAGE_FOOTER"
+                        )
+                        footer = footer.format(chat_message_content=_content)
                         _content = (
                             header
                             + "\n\n".join(
@@ -147,6 +160,7 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
                                     for tettra_page_chunk in tettra_page_chunks
                                 ]
                             )
+                            + "\n\n"
                             + footer
                         )
 

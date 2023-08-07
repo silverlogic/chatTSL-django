@@ -11,6 +11,8 @@ import dj_database_url
 from kombu import Exchange, Queue
 from PIL import Image
 
+from apps.constance.validators import validate_OPEN_AI_CHAT_CONSUMER__LATEST_USER_MESSAGE_FOOTER
+
 from .env import env
 
 BASE_DIR = pathlib.Path(__file__).parent.parent
@@ -257,7 +259,60 @@ CELERY_BEAT_SCHEDULE = {
 
 # Constance
 CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"
-CONSTANCE_CONFIG = OrderedDict([])
+CONSTANCE_CONFIG = OrderedDict(
+    [
+        (
+            "OPEN_AI_CHAT_CONSUMER__COSINE_DISTANCE_FILTER",
+            (
+                0.5,
+                _("The cosine_distance__lt filter value to use when searching for similar chunks."),
+                float,
+            ),
+        ),
+        (
+            "OPEN_AI_CHAT_CONSUMER__LATEST_USER_MESSAGE_HEADER",
+            (
+                "Answer the question using the provided context.\n\nContext:\n",
+                _("The text to prefix to the latest user message before sending to OpenAI."),
+                "OPEN_AI_CHAT_CONSUMER__LATEST_USER_MESSAGE_HEADER",
+            ),
+        ),
+        (
+            "OPEN_AI_CHAT_CONSUMER__LATEST_USER_MESSAGE_FOOTER",
+            (
+                "Question: {chat_message_content}",
+                _(
+                    "The text to suffix to the latest user message before sending to OpenAI. Make sure to include string format kwarg `chat_message_content`"
+                ),
+                "OPEN_AI_CHAT_CONSUMER__LATEST_USER_MESSAGE_FOOTER",
+            ),
+        ),
+    ]
+)
+CONSTANCE_CONFIG_FIELDSETS = {
+    "OpenAIChatConsumer Options": (
+        "OPEN_AI_CHAT_CONSUMER__COSINE_DISTANCE_FILTER",
+        "OPEN_AI_CHAT_CONSUMER__LATEST_USER_MESSAGE_HEADER",
+        "OPEN_AI_CHAT_CONSUMER__LATEST_USER_MESSAGE_FOOTER",
+    ),
+}
+CONSTANCE_ADDITIONAL_FIELDS = {
+    "OPEN_AI_CHAT_CONSUMER__LATEST_USER_MESSAGE_HEADER": [
+        "django.forms.fields.CharField",
+        {
+            "widget": "django.forms.Textarea",
+            "strip": False,
+        },
+    ],
+    "OPEN_AI_CHAT_CONSUMER__LATEST_USER_MESSAGE_FOOTER": [
+        "django.forms.fields.CharField",
+        {
+            "widget": "django.forms.Textarea",
+            "strip": False,
+            "validators": [validate_OPEN_AI_CHAT_CONSUMER__LATEST_USER_MESSAGE_FOOTER],
+        },
+    ],
+}
 
 # Social Auth
 SOCIAL_AUTH_PIPELINE = [
