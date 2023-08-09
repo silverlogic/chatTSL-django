@@ -10,22 +10,33 @@ pipeline {
     environment {
         BRANCH = "${env.BRANCH_NAME}"
         WORKSPACE = "${env.WORKSPACE}"
-        RUNDECK_STAGING_JOB_ID = "5cd60137-b97a-4831-a2b4-604821e7a3b8"
+        RUNDECK_PRODUCTION_JOB_ID = "5cd60137-b97a-4831-a2b4-604821e7a3b8"
     }
 
     stages {
         stage('Setup') {
             steps {
-            cache(defaultBranch: 'master', caches: [
-              arbitraryFileCache(path: '../venv', cacheValidityDecidingFile: 'requirements/*.txt')
+                cache(defaultBranch: 'master', caches: [
+                    arbitraryFileCache(path: '../venv', cacheValidityDecidingFile: 'requirements/*.txt')
                 ]) {
-                  sh '''
-                  apt-get update
-                  apt-get install -y poppler-utils python3-psycopg2 postgis python3-pygraphviz graphviz graphviz-dev libgraphviz-dev
-                  python3 -m venv ../venv
-                  . ../venv/bin/activate
-                  pip install -r requirements/dev.txt
-                  '''
+                    sh '''
+                    apt-get update
+                    apt-get install -y poppler-utils python3-psycopg2 postgis python3-pygraphviz graphviz graphviz-dev libgraphviz-dev libgdal-dev
+                    python3 -m venv ../venv
+                    . ../venv/bin/activate
+                    pip install -r requirements/dev.txt
+                    '''
+                }
+                container('postgres') {
+                    sh '''
+                    apk update
+                    apk add git postgresql-dev make gcc musl-dev
+                    git clone https://github.com/pgvector/pgvector.git
+                    cd pgvector
+                    make
+                    make install
+                    psql postgres --port=5432 --username postgres -c 'CREATE EXTENSION IF NOT EXISTS vector;'
+                    '''
                 }
             }
         }
@@ -138,54 +149,19 @@ pipeline {
                 }
             }
         }
-
-        // cluster autodeplyment via Jenkins job - uncomment if project is deployed on Kubernetes
-        // stage("Cluster Deploy") {
-        //     when {
-        //         expression {
-        //             // when testing Jenkins updates on a PR, use env.CHANGE_BRANCH instead of env.GIT_BRANCH
-        //             return env.GIT_BRANCH == "master"
-        //         }
-        //     }
-        //     steps {
-        //         script {
-        //             def repoName = env.GIT_URL.replaceFirst(/^.*\/([^\/]+?).git$/, '$1')
-        //             if(env.GIT_BRANCH == "master") {
-        //                 def repoBranch = env.GIT_BRANCH
-        //                 def registryTag = "${env.GIT_COMMIT}"
-        //                 def gitopsEnv = "staging"
-        //                 build(
-        //                     job: 'cluster-env-deploy',
-        //                     parameters: [
-        //                         // TODO: replace 'base' with project's short name
-        //                         string(name: 'registryProject', value: 'base'),
-        //                         string(name: 'registryRepositories', value: 'base-django:live'),
-        //                         string(name: 'registrySourceTag', value: registryTag),
-        //                         string(name: 'gitopsEnv', value: gitopsEnv),
-        //                         string(name: 'gitopsImageKeys', value: "django_image"),
-        //                         string(name: 'buildRepoName', value: repoName),
-        //                         string(name: 'buildRepoBranch', value: repoBranch),
-        //                     ],
-        //                 )
-        //             }
-        //         }
-        //     }
-        // }
     }
-
     post {
         success {
-            // replace with "Cluster Deploy" step if project is deployed on Kubernetes
             withCredentials([string(credentialsId: 'Rundeck', variable: 'RUNDECK_AUTH_TOKEN')]) {
                 script {
-                    if(BRANCH == "master") {
+                    if(BRANCH == "production") {
                         sh '''
                         curl \
                             -XPOST \
                             --header "X-Rundeck-Auth-Token: $RUNDECK_AUTH_TOKEN" \
                             --header "Content-Type: application/json" \
                             --data "{\"options\": {\"version\": \"$GIT_COMMIT\"}}" \
-                            "https://ops.tsl.io/api/18/job/$RUNDECK_STAGING_JOB_ID/executions"
+                            "https://ops.tsl.io/api/18/job/$RUNDECK_PRODUCTION_JOB_ID/executions"
                         '''
                     }
                 }

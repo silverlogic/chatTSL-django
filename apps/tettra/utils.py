@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import itertools
 import logging
 from collections.abc import Generator
 from contextlib import contextmanager
@@ -22,16 +23,35 @@ TEXT_EMBEDDING_CHUNK_OVERLAP = 30
 
 def generate_vector_embeddings(tettra_page: TettraPage):
     tettra_page.chunks.all().delete()
-    chunk_header = f"DOCUMENT TITLE: {tettra_page.page_title}\n\n---\n\n"
+    chunk_header = "FROM: {content}".format(
+        content=" / ".join(
+            list(
+                itertools.filterfalse(
+                    lambda item: not item,
+                    [
+                        tettra_page.category_name,
+                        tettra_page.subcategory_name,
+                        tettra_page.page_title,
+                    ],
+                )
+            )
+        )
+    )
     text_splitter = RecursiveCharacterTextSplitter.from_language(
         Language.HTML,
         chunk_size=TEXT_EMBEDDING_CHUNK_SIZE,
         chunk_overlap=TEXT_EMBEDDING_CHUNK_OVERLAP,
     )
     html_chunks = text_splitter.split_text(tettra_page.html)
-    text_chunks = [
-        "".join([chunk_header, BeautifulSoup(html_chunk, features="html.parser").get_text()])
+    html_text_chunks = [
+        BeautifulSoup(html_chunk, features="html.parser").get_text().strip()
         for html_chunk in html_chunks
+    ]
+    html_text_chunks = list(
+        itertools.filterfalse(lambda html_text_chunk: len(html_text_chunk) == 0, html_text_chunks)
+    )
+    text_chunks = [
+        "\n".join([chunk_header, html_text_chunk]) for html_text_chunk in html_text_chunks
     ]
     text_chunk_embedding_pairs = embed(text_chunks)
     TettraPageChunk.objects.bulk_create(

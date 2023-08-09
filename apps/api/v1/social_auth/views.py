@@ -41,7 +41,6 @@ class SocialAuthViewSet(SocialTokenOnlyAuthView, viewsets.GenericViewSet):
             return self.respond_error("Provider is not specified")
         self.set_input_data(request, input_data)
         decorate_request(request, provider_name)
-        print(self.request.backend)
         serializer_in = self.get_serializer_in(data=input_data)
         if self.oauth_v1() and request.backend.OAUTH_TOKEN_PARAMETER_NAME not in input_data:
             # oauth1 first stage (1st is get request_token, 2nd is get access_token)

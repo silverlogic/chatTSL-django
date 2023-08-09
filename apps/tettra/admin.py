@@ -13,6 +13,7 @@ class TettraPageAdmin(admin.ModelAdmin):
             instance.save()
 
     list_display = ("id", "page_id", "page_title", "url", "chunk_count")
+    search_fields = ("page_title", "category_name", "subcategory_name")
     actions = [refresh_embeddings]
 
     def get_queryset(self, request):
@@ -26,6 +27,12 @@ class TettraPageAdmin(admin.ModelAdmin):
 class TettraPageChunkAdmin(admin.ModelAdmin):
     list_display = ("id", "tettra_page", "content", "has_embedding")
     readonly_fields = ("embedding",)
+    search_fields = (
+        "content",
+        "tettra_page__page_title",
+        "tettra_page__category_name",
+        "tettra_page__subcategory_name",
+    )
 
     def get_queryset(self, request):
         return (
