@@ -137,7 +137,7 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
                     f'Using similar tettra page chunks as context: {[f"{t.id} {t.cosine_distance}" for t in tettra_page_chunks]}',
                 )
 
-                chat = ChatOpenAI(
+                chat_openai = ChatOpenAI(
                     openai_api_key=settings.OPENAI_API_KEY, temperature=0, model=self.chat.model
                 )
                 chat_messages = await self.get_chat_messages()
@@ -165,16 +165,17 @@ class OpenAIChatConsumer(AsyncJsonWebsocketConsumer):
                         )
 
                     messages.append(chat_message.LangchainSchemaMessageClass(content=_content))
+                system_message_text = await self.get_constance_config_attr(
+                    "OPEN_AI_CHAT_CONSUMER__SYSTEM_MESSAGE"
+                )
                 messages.insert(
                     0,
-                    SystemMessage(
-                        content="You are a helpful assistant at The SilverLogic. Return detailed answers that explain a process. Return html text that uses h3 tag for headers, p tag for body, ol or ul tags for lists."
-                    ),
+                    SystemMessage(content=system_message_text),
                 )
                 for message in messages:
                     logger.info(message.content)
 
-                chat_response = chat(messages)
+                chat_response = chat_openai(messages)
 
                 ai_chat_message = await self.create_chat_message(
                     dict(role=OpenAIChatMessage.ROLES.assistant, content=chat_response.content)

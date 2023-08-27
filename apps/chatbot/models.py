@@ -18,7 +18,7 @@ class OpenAIChat(TimeStampedModel):
         "gpt-4-0314",
     )
 
-    user = models.ForeignKey("users.User", related_name="chat", on_delete=models.CASCADE)
+    user = models.ForeignKey("users.User", related_name="chats", on_delete=models.CASCADE)
     model = models.CharField(
         null=False, blank=False, max_length=20, choices=MODELS, default=MODELS["gpt-4"]
     )

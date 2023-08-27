@@ -5,7 +5,8 @@ from .models import OpenAIChat, OpenAIChatMessage
 
 @admin.register(OpenAIChat)
 class OpenAIChatAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "model")
+    list_display = ("id", "user", "model", "created")
+    sortable_by = ("created",)
 
 
 @admin.register(OpenAIChatMessage)

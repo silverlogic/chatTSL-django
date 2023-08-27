@@ -3,6 +3,7 @@
 from django.db import migrations, models
 
 import pgvector.django
+from pgvector.django import VectorExtension
 
 
 class Migration(migrations.Migration):
@@ -12,6 +13,7 @@ class Migration(migrations.Migration):
     dependencies = []
 
     operations = [
+        VectorExtension(),
         migrations.CreateModel(
             name="TettraPage",
             fields=[

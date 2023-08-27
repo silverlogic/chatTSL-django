@@ -51,4 +51,10 @@ spec:
     - name: REDIS_URL
       value:
     - name: OPENAI_API_KEY
-      value: 1234
+      value: N/A
+    - name: SLACK_VERIFICATION_TOKEN
+      value: N/A
+    - name: SLACK_SIGNING_SECRET
+      value: N/A
+    - name: SLACK_BOT_OAUTH_TOKEN
+      value: N/A

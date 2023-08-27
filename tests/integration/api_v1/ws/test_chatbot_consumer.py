@@ -1,5 +1,3 @@
-# from unittest.mock import patch
-
 import pytest
 from asgiref.sync import sync_to_async
 from channels.testing import WebsocketCommunicator
@@ -10,12 +8,6 @@ import tests.factories as f
 from tests.mixins import ApiMixin
 
 pytestmark = pytest.mark.django_db
-
-
-class MockComposition:
-    def __init__(self) -> None:
-        self.status = "enqueued"
-        self.sid = "SD1234"
 
 
 class TestOpenAIChatConsumerConsumer(ApiMixin):

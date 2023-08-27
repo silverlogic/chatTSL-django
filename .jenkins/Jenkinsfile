@@ -6,13 +6,16 @@ pipeline {
             defaultContainer 'python3'
         }
     }
-
     environment {
         BRANCH = "${env.BRANCH_NAME}"
         WORKSPACE = "${env.WORKSPACE}"
         RUNDECK_PRODUCTION_JOB_ID = "5cd60137-b97a-4831-a2b4-604821e7a3b8"
     }
-
+    options {
+        ansiColor('xterm')
+        disableConcurrentBuilds(abortPrevious: true)
+        skipDefaultCheckout false
+    }
     stages {
         stage('Setup') {
             steps {

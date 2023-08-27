@@ -88,6 +88,7 @@ INSTALLED_APPS = [
     # Project
     "apps.tettra",
     "apps.chatbot",
+    "apps.slack",
 ]
 
 MIDDLEWARE = [
@@ -287,6 +288,14 @@ CONSTANCE_CONFIG = OrderedDict(
                 "OPEN_AI_CHAT_CONSUMER__LATEST_USER_MESSAGE_FOOTER",
             ),
         ),
+        (
+            "OPEN_AI_CHAT_CONSUMER__SYSTEM_MESSAGE",
+            (
+                "You are a helpful assistant at The SilverLogic. Return detailed answers that explain a process. Return html text that uses h3 tag for headers, p tag for body, ol or ul tags for lists.",
+                _("The text to use as a system message."),
+                "OPEN_AI_CHAT_CONSUMER__SYSTEM_MESSAGE",
+            ),
+        ),
     ]
 )
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -294,6 +303,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
         "OPEN_AI_CHAT_CONSUMER__COSINE_DISTANCE_FILTER",
         "OPEN_AI_CHAT_CONSUMER__LATEST_USER_MESSAGE_HEADER",
         "OPEN_AI_CHAT_CONSUMER__LATEST_USER_MESSAGE_FOOTER",
+        "OPEN_AI_CHAT_CONSUMER__SYSTEM_MESSAGE",
     ),
 }
 CONSTANCE_ADDITIONAL_FIELDS = {
@@ -310,6 +320,13 @@ CONSTANCE_ADDITIONAL_FIELDS = {
             "widget": "django.forms.Textarea",
             "strip": False,
             "validators": [validate_OPEN_AI_CHAT_CONSUMER__LATEST_USER_MESSAGE_FOOTER],
+        },
+    ],
+    "OPEN_AI_CHAT_CONSUMER__SYSTEM_MESSAGE": [
+        "django.forms.fields.CharField",
+        {
+            "widget": "django.forms.Textarea",
+            "strip": False,
         },
     ],
 }
@@ -388,3 +405,8 @@ CHANNEL_LAYERS = {
 
 # OpenAI
 OPENAI_API_KEY = env("OPENAI_API_KEY")
+
+# SLACK
+SLACK_VERIFICATION_TOKEN = env("SLACK_VERIFICATION_TOKEN")
+SLACK_SIGNING_SECRET = env("SLACK_SIGNING_SECRET")
+SLACK_BOT_OAUTH_TOKEN = env("SLACK_BOT_OAUTH_TOKEN")
