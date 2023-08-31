@@ -43,9 +43,15 @@ class _OpenAIChatController:
         from apps.chatbot.models import OpenAIChatMessage
         from apps.tettra.utils import find_similar
 
+        self.chat.refresh_from_db()
         filter_value = getattr(config, "OPEN_AI_CHAT_CONSUMER__COSINE_DISTANCE_FILTER")
+        filter_kwargs = dict(cosine_distance__lt=filter_value)
+        if self.chat.tettra_page_category_filter is not None:
+            filter_kwargs["tettra_page__category"] = self.chat.tettra_page_category_filter
+        if self.chat.tettra_page_subcategory_filter is not None:
+            filter_kwargs["tettra_page__subcategory"] = self.chat.tettra_page_subcategory_filter
 
-        queryset = find_similar(text).filter(cosine_distance__lt=filter_value)
+        queryset = find_similar(text).filter(**filter_kwargs)
         return list(queryset[: OpenAIChatMessage.MAX_TETTRA_PAGE_CHUNKS])
 
     def get_constance_config_attr(self, attr: str):

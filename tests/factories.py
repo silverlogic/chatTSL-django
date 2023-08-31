@@ -4,7 +4,7 @@ import faker
 from faker.providers import internet, lorem
 
 from apps.chatbot.models import OpenAIChat, OpenAIChatMessage
-from apps.tettra.models import TettraPage
+from apps.tettra.models import TettraPage, TettraPageCategory, TettraPageSubcategory
 
 faker = faker.Faker()
 faker.add_provider(internet)
@@ -87,14 +87,28 @@ class TettraPageFactory(factory.DjangoModelFactory):
     owner_name = factory.Faker("name")
     owner_email = factory.Faker("email")
     url = faker.url()
-    category_id = factory.fuzzy.FuzzyInteger(1, 5)
-    category_name = factory.Faker("name")
-    subcategory_id = factory.fuzzy.FuzzyInteger(1, 5)
-    subcategory_name = factory.Faker("name")
+    category = factory.SubFactory("tests.factories.TettraPageCategoryFactory")
+    subcategory = factory.SubFactory("tests.factories.TettraPageSubcategoryFactory")
     html = factory.LazyFunction(lambda: "<p>Content</p>")
 
     class Meta:
         model = "tettra.TettraPage"
+
+
+class TettraPageCategoryFactory(factory.DjangoModelFactory):
+    category_id = factory.LazyFunction(lambda: TettraPageCategory.objects.count() + 1)
+    category_name = factory.Faker("name")
+
+    class Meta:
+        model = "tettra.TettraPageCategory"
+
+
+class TettraPageSubcategoryFactory(factory.DjangoModelFactory):
+    subcategory_id = factory.LazyFunction(lambda: TettraPageSubcategory.objects.count() + 1)
+    subcategory_name = factory.Faker("name")
+
+    class Meta:
+        model = "tettra.TettraPageSubcategory"
 
 
 class TettraPageChunkFactory(factory.DjangoModelFactory):

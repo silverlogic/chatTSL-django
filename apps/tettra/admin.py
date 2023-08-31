@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.db.models import BooleanField, Count, ExpressionWrapper, Q
 
-from .models import TettraPage, TettraPageChunk
+from .models import TettraPage, TettraPageCategory, TettraPageChunk, TettraPageSubcategory
 
 
 @admin.register(TettraPage)
@@ -13,7 +13,8 @@ class TettraPageAdmin(admin.ModelAdmin):
             instance.save()
 
     list_display = ("id", "page_id", "page_title", "url", "chunk_count")
-    search_fields = ("page_title", "category_name", "subcategory_name")
+    search_fields = ("page_title", "category__category_name", "subcategory__subcategory_name")
+    list_filter = ["category__category_name", "subcategory__subcategory_name"]
     actions = [refresh_embeddings]
 
     def get_queryset(self, request):
@@ -23,6 +24,16 @@ class TettraPageAdmin(admin.ModelAdmin):
         return obj.chunk_count
 
 
+@admin.register(TettraPageCategory)
+class TettraPageCategoryAdmin(admin.ModelAdmin):
+    list_display = ("id", "category_id", "category_name")
+
+
+@admin.register(TettraPageSubcategory)
+class TettraPageSubcategoryAdmin(admin.ModelAdmin):
+    list_display = ("id", "subcategory_id", "subcategory_name")
+
+
 @admin.register(TettraPageChunk)
 class TettraPageChunkAdmin(admin.ModelAdmin):
     list_display = ("id", "tettra_page", "content", "has_embedding")
@@ -30,8 +41,8 @@ class TettraPageChunkAdmin(admin.ModelAdmin):
     search_fields = (
         "content",
         "tettra_page__page_title",
-        "tettra_page__category_name",
-        "tettra_page__subcategory_name",
+        "tettra_page__category__category_name",
+        "tettra_page__subcategory__subcategory_name",
     )
 
     def get_queryset(self, request):

@@ -2,11 +2,18 @@ import json
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from rest_framework import permissions, response, status, viewsets
+from django_filters import rest_framework as django_filters
+from rest_framework import mixins, permissions, response, status, viewsets
 
-from apps.tettra.models import TettraPage
+from apps.tettra.models import TettraPage, TettraPageCategory, TettraPageSubcategory
 
-from .serializers import TettraPageImportDumpSerializer, TettraPageSerializer
+from .filters import TettraPageSubcategoriesFilter
+from .serializers import (
+    TettraPageCategorySerializer,
+    TettraPageImportDumpSerializer,
+    TettraPageSerializer,
+    TettraPageSubcategorySerializer,
+)
 
 
 class TettraPageImportDumpViewSet(viewsets.GenericViewSet):
@@ -35,6 +42,21 @@ class TettraPageImportDumpViewSet(viewsets.GenericViewSet):
                 TettraPage.objects.filter(page_id=page_id).delete()
                 response_data[page_id] = "Deleted"
             else:
+                category_data = dict(
+                    category_id=tettra_page_data.pop("category_id"),
+                    category_name=tettra_page_data.pop("category_name"),
+                )
+                subcategory_data: dict = None
+                if all(
+                    [
+                        tettra_page_data.get("subcategory_id", None) is not None,
+                        tettra_page_data.get("subcategory_name", None) is not None,
+                    ]
+                ):
+                    subcategory_data = dict(
+                        subcategory_id=tettra_page_data.pop("subcategory_id"),
+                        subcategory_name=tettra_page_data.pop("subcategory_name"),
+                    )
                 try:
                     serializer = TettraPageSerializer(
                         TettraPage.objects.get(page_id=page_id), data=tettra_page_data, partial=True
@@ -46,7 +68,7 @@ class TettraPageImportDumpViewSet(viewsets.GenericViewSet):
 
                 try:
                     serializer.is_valid(raise_exception=True)
-                    serializer.save()
+                    serializer.save(category=category_data, subcategory=subcategory_data)
                 except BaseException as e:
                     response_data[page_id] = str(e)
 
@@ -54,3 +76,21 @@ class TettraPageImportDumpViewSet(viewsets.GenericViewSet):
             response_data,
             status=status.HTTP_200_OK,
         )
+
+
+class TettraPageCategoriesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = TettraPageCategory.objects.all().distinct("category_id").order_by("category_id")
+    serializer_class = TettraPageCategorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+    pagination_class = None
+
+
+class TettraPageSubcategoriesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = (
+        TettraPageSubcategory.objects.all().distinct("subcategory_id").order_by("subcategory_id")
+    )
+    serializer_class = TettraPageSubcategorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+    pagination_class = None
+    filter_backends = (django_filters.DjangoFilterBackend,)
+    filterset_class = TettraPageSubcategoriesFilter

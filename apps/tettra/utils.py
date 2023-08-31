@@ -29,8 +29,8 @@ def generate_vector_embeddings(tettra_page: TettraPage):
                 itertools.filterfalse(
                     lambda item: not item,
                     [
-                        tettra_page.category_name,
-                        tettra_page.subcategory_name,
+                        tettra_page.category.category_name,
+                        getattr(tettra_page.subcategory, "subcategory_name", None),
                         tettra_page.page_title,
                     ],
                 )

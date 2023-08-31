@@ -13,7 +13,14 @@ class TestOpenAIChatsMixin(ApiMixin):
             if set(data.keys()) == {"count", "next", "previous", "results"}:
                 self.check_data_keys(data["results"])
             else:
-                assert set(data.keys()) == {"id", "user", "model", "messages"}
+                assert set(data.keys()) == {
+                    "id",
+                    "user",
+                    "model",
+                    "messages",
+                    "tettra_page_category_filter",
+                    "tettra_page_subcategory_filter",
+                }
         elif isinstance(data, list):
             for element in data:
                 self.check_data_keys(element)
@@ -70,6 +77,47 @@ class TestOpenAIChatsList(TestOpenAIChatsListMixin):
         h.responseOk(r)
         assert len(r.data["results"]) == 7
         self.check_data_keys(r.data)
+
+
+class TestOpenAIChatsUpdate(TestOpenAIChatsDetailMixin):
+    def test_anon_cant_update(self, client):
+        instance = f.OpenAIChatFactory(user=f.UserFactory())
+        r = client.patch(self.reverse(kwargs={"pk": instance.id}), dict())
+        h.responseUnauthorized(r)
+
+    def test_user_cant_update_unowned_chat(self, user_client):
+        instance = f.OpenAIChatFactory(user=f.UserFactory(), model="gpt-4")
+        r = user_client.patch(
+            self.reverse(kwargs={"pk": instance.id}), dict(model="gpt-3.5-turbo-16k")
+        )
+        h.responseNotFound(r)
+
+    def test_user_can_update_owned_chat(self, user_client):
+        instance = f.OpenAIChatFactory(user=user_client.user, model="gpt-4")
+        r = user_client.patch(
+            self.reverse(kwargs={"pk": instance.id}), dict(model="gpt-3.5-turbo-16k")
+        )
+        h.responseOk(r)
+        self.check_data_keys(r.data)
+        instance.refresh_from_db()
+        assert instance.model == "gpt-3.5-turbo-16k"
+
+    def test_updating_category_updates_subcategory(self, user_client):
+        tettra_page_1 = f.TettraPageFactory()
+        tettra_page_2 = f.TettraPageFactory()
+        instance = f.OpenAIChatFactory(
+            user=user_client.user,
+            tettra_page_category_filter=tettra_page_1.category,
+            tettra_page_subcategory_filter=tettra_page_1.subcategory,
+        )
+        r = user_client.patch(
+            self.reverse(kwargs={"pk": instance.id}),
+            dict(tettra_page_category_filter=tettra_page_2.category.id),
+        )
+        h.responseOk(r)
+        self.check_data_keys(r.data)
+        instance.refresh_from_db()
+        assert instance.tettra_page_subcategory_filter is None
 
 
 class TestOpenAIChatsDestroy(TestOpenAIChatsDetailMixin):

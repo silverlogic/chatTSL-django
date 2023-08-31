@@ -32,9 +32,17 @@ from .change_email.views import ChangeEmailViewSet  # noqa
 router.register(r"change-email", ChangeEmailViewSet, basename="change-email")
 
 # Tettra
-from .tettra.views import TettraPageImportDumpViewSet  # noqa
+from .tettra.views import (  # noqa
+    TettraPageImportDumpViewSet,
+    TettraPageCategoriesViewSet,
+    TettraPageSubcategoriesViewSet,
+)
 
 router.register(r"tettra/import-dump", TettraPageImportDumpViewSet, basename="tettra-import-dump")
+router.register(r"tettra/categories", TettraPageCategoriesViewSet, basename="tettra-categories")
+router.register(
+    r"tettra/subcategories", TettraPageSubcategoriesViewSet, basename="tettra-subcategories"
+)
 
 # Chatbot
 from .chatbot.views import OpenAIChatViewSet, OpenAIChatMessageViewSet  # noqa

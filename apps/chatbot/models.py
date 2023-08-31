@@ -22,6 +22,31 @@ class OpenAIChat(TimeStampedModel):
     model = models.CharField(
         null=False, blank=False, max_length=20, choices=MODELS, default=MODELS["gpt-4"]
     )
+    tettra_page_category_filter = models.ForeignKey(
+        "tettra.TettraPageCategory",
+        related_name="openai_chats",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    tettra_page_subcategory_filter = models.ForeignKey(
+        "tettra.TettraPageSubcategory",
+        related_name="openai_chats",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+
+    def save(self, *args, **kwargs):
+        if (
+            self.tettra_page_category_filter is not None
+            and self.tettra_page_subcategory_filter is not None
+        ):
+            if not self.tettra_page_category_filter.tettra_pages.filter(
+                subcategory=self.tettra_page_subcategory_filter
+            ).exists():
+                self.tettra_page_subcategory_filter = None
+        return super(OpenAIChat, self).save(*args, **kwargs)
 
 
 class OpenAIChatMessage(TimeStampedModel):

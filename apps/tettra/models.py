@@ -13,10 +13,15 @@ class TettraPage(models.Model):
     owner_name = models.CharField(max_length=255)
     owner_email = models.EmailField()
     url = models.URLField()
-    category_id = models.IntegerField()
-    category_name = models.CharField(max_length=255)
-    subcategory_id = models.IntegerField(null=True, blank=True)
-    subcategory_name = models.CharField(max_length=255, null=True, blank=True)
+    category = models.ForeignKey(
+        "tettra.TettraPageCategory", related_name="tettra_pages", on_delete=models.CASCADE
+    )
+    subcategory = models.ForeignKey(
+        "tettra.TettraPageSubcategory",
+        related_name="tettra_pages",
+        on_delete=models.CASCADE,
+        null=True,
+    )
     html = models.TextField()
 
     tracker = FieldTracker(
@@ -29,10 +34,6 @@ class TettraPage(models.Model):
     def save(self, *args, **kwargs):
         from .tasks import generate_vector_embeddings
 
-        if self.subcategory_id is None or self.subcategory_name is None:
-            self.subcategory_id = None
-            self.subcategory_name = None
-
         with self.tracker:
             super().save(*args, **kwargs)
             if (
@@ -42,6 +43,16 @@ class TettraPage(models.Model):
             ):
                 self.chunks.all().delete()
                 generate_vector_embeddings.delay(tettra_page=self.id)
+
+
+class TettraPageCategory(models.Model):
+    category_id = models.BigIntegerField(unique=True, db_index=True)
+    category_name = models.CharField(max_length=255)
+
+
+class TettraPageSubcategory(models.Model):
+    subcategory_id = models.BigIntegerField(unique=True, db_index=True)
+    subcategory_name = models.CharField(max_length=255)
 
 
 class TettraPageChunk(models.Model):

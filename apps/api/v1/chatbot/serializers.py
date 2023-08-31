@@ -4,17 +4,30 @@ from collections import OrderedDict
 
 from rest_framework import serializers
 
-from apps.api.v1.tettra.serializers import TettraPageSerializer
+from apps.api.v1.tettra.serializers import (
+    TettraPageCategorySerializer,
+    TettraPageSerializer,
+    TettraPageSubcategorySerializer,
+)
 from apps.chatbot.models import OpenAIChat, OpenAIChatMessage
 
 
 class OpenAIChatSerializer(serializers.ModelSerializer):
     messages: OpenAIChatMessageSerializer
+    tettra_page_category_filter = TettraPageCategorySerializer(many=False, default=None)
+    tettra_page_subcategory_filter = TettraPageSubcategorySerializer(many=False, default=None)
 
     class Meta:
         model = OpenAIChat
-        fields = ["id", "user", "model", "messages"]
-        read_only_fields = ("user", "messages")
+        fields = [
+            "id",
+            "user",
+            "model",
+            "messages",
+            "tettra_page_category_filter",
+            "tettra_page_subcategory_filter",
+        ]
+        read_only_fields = ["id", "user", "messages"]
 
     def __new__(cls, *args, **kwargs):
         cls._declared_fields["messages"] = OpenAIChatMessageSerializer(many=True, read_only=True)
@@ -30,6 +43,15 @@ class OpenAIChatSerializer(serializers.ModelSerializer):
             user = scope.get("user", None)
         validated_data["user"] = user
         return super().create(validated_data)
+
+
+class OpenAIChatUpdateSerializer(serializers.ModelSerializer):
+    def __new__(cls, *args, **kwargs):
+        cls._declared_fields["messages"] = OpenAIChatMessageSerializer(many=True, read_only=True)
+        return super().__new__(cls, *args, **kwargs)
+
+    class Meta(OpenAIChatSerializer.Meta):
+        read_only_fields = ["id", "user", "messages"]
 
 
 class OpenAIChatMessageSerializer(serializers.ModelSerializer):
@@ -63,8 +85,6 @@ class TettraPageSimpleSerializer(TettraPageSerializer):
             "owner_name",
             "owner_email",
             "url",
-            "category_id",
-            "category_name",
-            "subcategory_id",
-            "subcategory_name",
+            "category",
+            "subcategory",
         )
