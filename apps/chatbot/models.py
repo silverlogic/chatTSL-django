@@ -38,7 +38,9 @@ class OpenAIChat(TimeStampedModel):
     )
 
     def save(self, *args, **kwargs):
-        if (
+        if self.tettra_page_category_filter is None:
+            self.tettra_page_subcategory_filter = None
+        elif (
             self.tettra_page_category_filter is not None
             and self.tettra_page_subcategory_filter is not None
         ):

@@ -70,3 +70,12 @@ langchain==0.0.198
 
 # Slack
 slack_sdk==3.21.3
+
+# Django celery results
+django_celery_results==2.5.1
+
+# PyDash
+pydash==7.0.6
+
+# Pygments
+Pygments==2.15.1

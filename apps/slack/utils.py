@@ -5,28 +5,43 @@ import sys
 from io import BytesIO
 from pathlib import Path
 from time import time
-from typing import Tuple
+from typing import Optional, Tuple
 
 from django.conf import settings
 from django.core.files.images import ImageFile
 
 import requests
 from avatar.models import Avatar
-from slack_sdk import WebClient
 
+from apps.slack import slack_bot_client
 from apps.users.models import User
 
 logger = logging.getLogger(__name__)
 
 
-def get_or_create_user_for_slack_user(slack_user_id: str) -> Tuple[User, bool]:
-    slack_client = WebClient(token=settings.SLACK_BOT_OAUTH_TOKEN)
-
-    response = slack_client.users_profile_get(
+def get_user_for_slack_user(slack_user_id: str) -> Optional[User]:
+    response = slack_bot_client.users_profile_get(
         user=slack_user_id,
     )
-    if not response.get("ok"):
-        raise Exception("Failed to fetch slack user profile")
+    response.validate()
+    user_profile: dict = response["profile"]
+    is_from_bot = isinstance(user_profile.get("api_app_id"), str)
+    if is_from_bot:
+        return None
+
+    try:
+        return User.objects.get(
+            email=user_profile["email"],
+        )
+    except User.DoesNotExist:
+        return None
+
+
+def get_or_create_user_for_slack_user(slack_user_id: str) -> Tuple[Optional[User], bool]:
+    response = slack_bot_client.users_profile_get(
+        user=slack_user_id,
+    )
+    response.validate()
     user_profile: dict = response["profile"]
     is_from_bot = isinstance(user_profile.get("api_app_id"), str)
     if is_from_bot:

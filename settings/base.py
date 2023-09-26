@@ -79,6 +79,7 @@ INSTALLED_APPS = [
     "constance",
     "constance.backends.database",
     "channels",
+    "django_celery_results",
     # Base
     "apps.api",
     "apps.referrals",
@@ -246,6 +247,8 @@ CELERY_TASK_DEFAULT_QUEUE = "default"
 CELERY_TASK_DEFAULT_EXCHANGE_TYPE = "direct"
 CELERY_TASK_DEFAULT_ROUTING_KEY = "default"
 CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_RESULT_EXTENDED = True
 CELERY_TASK_ROUTES = {
     "djmail.tasks.send_messages": {"exchange": "default", "routing_key": "emails"},
     "djmail.tasks.retry_send_messages": {"exchange": "default", "routing_key": "emails"},
@@ -256,6 +259,13 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": timedelta(hours=1),
         "options": {"expires": 60 * 30},
     }
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": env("REDIS_URL"),
+    },
 }
 
 # Constance

@@ -1,3 +1,5 @@
+import json
+
 import factory.faker
 import factory.fuzzy
 import faker
@@ -134,3 +136,55 @@ class OpenAIChatMessageFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = "chatbot.OpenAIChatMessage"
+
+
+class JSONFactory(factory.DictFactory):
+    """
+    Use with factory.Dict to make JSON strings.
+    """
+
+    @classmethod
+    def _generate(cls, create, attrs):
+        obj = super()._generate(create, attrs)
+        return json.dumps(obj)
+
+
+class SlackInstallationFactory(factory.django.DjangoModelFactory):
+    slack_oauth_response = factory.Dict(
+        {
+            "access_token": "xoxb-TEST",
+            "app_id": "TEST643TEST",
+            "authed_user": {"id": "TESTLTEST"},
+            "bot_user_id": "TESTV7FTEST",
+            "enterprise": None,
+            "incoming_webhook": {
+                "channel": "#slack-sandbox",
+                "channel_id": "TEST69NTEST",
+                "configuration_url": "https://silverlogic.slack.com/services/TESTUQETEST",
+                "url": "https://hooks.slack.com/services/TEST0TEST/TESTUQETEST/TESTRkXN5HX78NXCc4LTTEST",
+            },
+            "is_enterprise_install": False,
+            "ok": True,
+            "scope": "incoming-webhook,chat:write.public,chat:write,commands,users.profile:read",
+            "team": {"id": "TEST0TEST", "name": "SilverLogic"},
+            "token_type": "bot",
+        },
+        dict_factory=JSONFactory,
+    )
+
+    class Meta:
+        model = "slack.SlackInstallation"
+
+
+class SlackEventCallbackDataFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "slack.SlackEventCallbackData"
+
+
+class SlackOpenAIChatFactory(factory.django.DjangoModelFactory):
+    celery_task_id = None
+    chat = factory.SubFactory("tests.factories.OpenAIChatFactory")
+    slack_event_json = None
+
+    class Meta:
+        model = "slack.SlackOpenAIChat"
