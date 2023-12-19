@@ -31,7 +31,7 @@ class TettraPageCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(TettraPageSubcategory)
 class TettraPageSubcategoryAdmin(admin.ModelAdmin):
-    list_display = ("id", "subcategory_id", "subcategory_name")
+    list_display = ("id", "subcategory_id", "subcategory_name", "subcategory_icon")
 
 
 @admin.register(TettraPageChunk)

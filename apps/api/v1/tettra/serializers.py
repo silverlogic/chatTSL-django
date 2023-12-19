@@ -111,4 +111,5 @@ class TettraPageSubcategorySerializer(serializers.ModelSerializer):
             "id",
             "subcategory_id",
             "subcategory_name",
+            "subcategory_icon",
         )

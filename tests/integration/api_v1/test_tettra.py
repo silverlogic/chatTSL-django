@@ -54,6 +54,7 @@ class TestTettraPageSubcategoriesMixin(ApiMixin):
                     "id",
                     "subcategory_id",
                     "subcategory_name",
+                    "subcategory_icon",
                 }
         elif isinstance(data, list):
             for element in data:

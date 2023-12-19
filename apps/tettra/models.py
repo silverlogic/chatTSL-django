@@ -5,6 +5,8 @@ from django.db import models
 from model_utils import FieldTracker
 from pgvector.django import VectorField
 
+from .fields import EmojiField
+
 
 class TettraPage(models.Model):
     page_id = models.PositiveIntegerField(unique=True, db_index=True)
@@ -53,6 +55,7 @@ class TettraPageCategory(models.Model):
 class TettraPageSubcategory(models.Model):
     subcategory_id = models.BigIntegerField(unique=True, db_index=True)
     subcategory_name = models.CharField(max_length=255)
+    subcategory_icon = EmojiField(null=True, blank=True)
 
 
 class TettraPageChunk(models.Model):
