@@ -2,7 +2,7 @@ from typing import Type
 
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext_lazy as _
 
 from langchain.schema import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from model_utils import Choices

@@ -9,8 +9,8 @@ from channels.db import database_sync_to_async
 from channels.exceptions import StopConsumer
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from constance import config
-from langchain.chat_models import ChatOpenAI
 from langchain.schema import SystemMessage
+from langchain_community.chat_models import ChatOpenAI
 from rest_framework import exceptions, serializers
 
 logger = logging.getLogger(__name__)

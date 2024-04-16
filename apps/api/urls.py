@@ -1,4 +1,4 @@
-from django.conf.urls import include, re_path
+from django.urls import include, re_path
 
 from .v1.router import router as v1_router
 from .ws.urls import websocket_urlpatterns  # noqa

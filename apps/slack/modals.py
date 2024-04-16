@@ -120,9 +120,11 @@ class SlackOpenAIChatModalBuilder:
             return {
                 "text": {
                     "type": "plain_text",
-                    "text": tettra_page_subcategory.subcategory_name
-                    if tettra_page_subcategory
-                    else "None",
+                    "text": (
+                        tettra_page_subcategory.subcategory_name
+                        if tettra_page_subcategory
+                        else "None"
+                    ),
                     "emoji": False,
                 },
                 "value": f"{tettra_page_subcategory.id if tettra_page_subcategory else -1}",

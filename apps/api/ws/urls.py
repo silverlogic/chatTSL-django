@@ -1,4 +1,4 @@
-from django.conf.urls import re_path
+from django.urls import re_path
 
 from apps.api.v1.users.channels import UsersConsumer  # noqa
 from apps.api.ws.chatbot.consumers import OpenAIChatConsumer  # noqa

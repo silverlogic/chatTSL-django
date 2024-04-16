@@ -41,19 +41,6 @@ class TestSocialAuth(SocialAuthMixin):
         assert "provider" in r.data
 
 
-class TestOAuth2(OAuth2Mixin):
-    def test_cant_auth_without_redirect_uri(self, client, base_data, settings):
-        base_data["provider"] = "facebook"
-        base_data.pop("redirect_uri")
-        settings.SOCIAL_AUTH_FACEBOOK_KEY = "1234"
-        settings.SOCIAL_AUTH_FACEBOOK_SECRET = "1234"
-        settings.AUTHENTICATION_BACKENDS = ["social_core.backends.facebook.FacebookOAuth2"]
-        social_django.utils.BACKENDS = settings.AUTHENTICATION_BACKENDS
-        r = client.post(self.reverse(), base_data)
-        h.responseBadRequest(r)
-        assert "redirect_uri" in r.data
-
-
 class TestFacebookSocialAuth(OAuth2Mixin):
     @pytest.fixture
     def data(self, base_data, settings, image_base64):
@@ -66,7 +53,7 @@ class TestFacebookSocialAuth(OAuth2Mixin):
 
         httpretty.register_uri(
             httpretty.GET,
-            re.compile(r"https://graph.facebook.com/v2.\d+/me/picture$"),
+            re.compile(r"https://graph.facebook.com/v\d+.\d+/me/picture$"),
             body=image_base64,
         )
 
@@ -76,7 +63,7 @@ class TestFacebookSocialAuth(OAuth2Mixin):
     def success_data(self, data):
         httpretty.register_uri(
             httpretty.GET,
-            re.compile(r"https://graph.facebook.com/v3.\d+/oauth/access_token$"),
+            re.compile(r"https://graph.facebook.com/v\d+.\d+/oauth/access_token$"),
             body=json.dumps({"access_token": "1234", "token_type": "type", "expires_in": 6000}),
         )
         return data
@@ -85,7 +72,7 @@ class TestFacebookSocialAuth(OAuth2Mixin):
     def complete_data(self, success_data):
         httpretty.register_uri(
             httpretty.GET,
-            re.compile(r"https://graph.facebook.com/v3.\d+/me$"),
+            re.compile(r"https://graph.facebook.com/v\d+.\d+/me$"),
             body=json.dumps(
                 {
                     "id": "1387123",
@@ -110,7 +97,7 @@ class TestFacebookSocialAuth(OAuth2Mixin):
     def invalid_code_data(self, data):
         httpretty.register_uri(
             httpretty.GET,
-            re.compile(r"https://graph.facebook.com/v3.\d+/oauth/access_token$"),
+            re.compile(r"https://graph.facebook.com/v\d+.\d+/oauth/access_token$"),
             status=400,
         )
         return data

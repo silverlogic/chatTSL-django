@@ -8,8 +8,8 @@ from django.conf import settings
 from celery import shared_task
 from celery.result import AsyncResult
 from constance import config
-from langchain.chat_models import ChatOpenAI
 from langchain.schema import SystemMessage
+from langchain_community.chat_models import ChatOpenAI
 from slack_sdk.models import blocks
 
 from apps.api.v1.chatbot.serializers import OpenAIChatMessageSerializer

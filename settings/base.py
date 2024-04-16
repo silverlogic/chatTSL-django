@@ -1,6 +1,7 @@
 """
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
+
 import pathlib
 from collections import OrderedDict
 from datetime import timedelta
@@ -420,3 +421,5 @@ OPENAI_API_KEY = env("OPENAI_API_KEY")
 SLACK_VERIFICATION_TOKEN = env("SLACK_VERIFICATION_TOKEN")
 SLACK_SIGNING_SECRET = env("SLACK_SIGNING_SECRET")
 SLACK_BOT_OAUTH_TOKEN = env("SLACK_BOT_OAUTH_TOKEN")
+
+CSRF_TRUSTED_ORIGINS = [URL, FRONT_URL]
