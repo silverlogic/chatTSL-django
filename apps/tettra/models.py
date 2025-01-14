@@ -36,6 +36,12 @@ class TettraPage(models.Model):
     def save(self, *args, **kwargs):
         from .tasks import generate_vector_embeddings
 
+        # GAI-101: Automatic embeddings generation is temporarily disabled
+        # Temporarily disable the automatic regeneration of embeddings because of celery worker memory issues
+        # Manually regenerate using the tettra_page management command instead for now
+        super().save(*args, **kwargs)
+        return
+
         with self.tracker:
             super().save(*args, **kwargs)
             if (

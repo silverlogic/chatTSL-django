@@ -9,8 +9,8 @@ from typing import List, Tuple
 from django.db.models.manager import BaseManager
 
 from bs4 import BeautifulSoup
-from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import Language, RecursiveCharacterTextSplitter
+from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from pgvector.django import CosineDistance
 
 from .models import TettraPage, TettraPageChunk
@@ -82,7 +82,7 @@ def embed(text_array: List[str]) -> List[Tuple[str, List[float]]]:
     Accepts string or list of strings and returns the string/embedding pair
     """
     with hugging_face_embeddings() as embeddings:
-        return zip(text_array, embeddings.client.encode(text_array, show_progress_bar=False))
+        return zip(text_array, embeddings._client.encode(text_array, show_progress_bar=False))
 
 
 def find_similar(query: str) -> BaseManager[TettraPageChunk]:

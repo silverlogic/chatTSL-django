@@ -9,6 +9,7 @@ pytestmark = pytest.mark.django_db
 VECTOR_DIM = 384
 
 
+@pytest.mark.skip("GAI-101: Automatic embeddings generation is temporarily disabled")
 def test_can_save_embedding():
     tettra_page = f.TettraPageFactory()
     tettra_page.refresh_from_db()
@@ -29,11 +30,19 @@ def test_can_save_embedding():
 
 
 def test_generate_embeddings_skips_blank_chunks():
+    from apps.tettra.tasks import generate_vector_embeddings
+
     tettra_page_1 = f.TettraPageFactory(html="<p>Test<p>")
     tettra_page_1.save()
+    # GAI-101: Automatic embeddings generation is temporarily disabled
+    # So we need to manually call the task
+    generate_vector_embeddings.delay(tettra_page=tettra_page_1.id)
     tettra_page_1.refresh_from_db()
     assert tettra_page_1.chunks.count() == 1
     tettra_page_2 = f.TettraPageFactory(html="<p> <p>")
     tettra_page_2.save()
+    # GAI-101: Automatic embeddings generation is temporarily disabled
+    # So we need to manually call the task
+    generate_vector_embeddings.delay(tettra_page=tettra_page_2.id)
     tettra_page_2.refresh_from_db()
     assert tettra_page_2.chunks.count() == 0

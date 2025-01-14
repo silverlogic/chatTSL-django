@@ -38,11 +38,11 @@ class TestOpenAIChatsListMixin(TestOpenAIChatsMixin):
 
 class TestOpenAIChatsCreate(TestOpenAIChatsListMixin):
     def test_anon_cant_create(self, client):
-        r = client.post(self.reverse(), dict(model="gpt-4"))
+        r = client.post(self.reverse(), dict(model="gpt-4o"))
         h.responseUnauthorized(r)
 
     def test_user_can_create(self, user_client):
-        r = user_client.post(self.reverse(), dict(model="gpt-4"))
+        r = user_client.post(self.reverse(), dict(model="gpt-4o"))
         h.responseCreated(r)
         self.check_data_keys(r.data)
 
@@ -86,21 +86,17 @@ class TestOpenAIChatsUpdate(TestOpenAIChatsDetailMixin):
         h.responseUnauthorized(r)
 
     def test_user_cant_update_unowned_chat(self, user_client):
-        instance = f.OpenAIChatFactory(user=f.UserFactory(), model="gpt-4")
-        r = user_client.patch(
-            self.reverse(kwargs={"pk": instance.id}), dict(model="gpt-3.5-turbo-16k")
-        )
+        instance = f.OpenAIChatFactory(user=f.UserFactory(), model="gpt-4o")
+        r = user_client.patch(self.reverse(kwargs={"pk": instance.id}), dict(model="o1-mini"))
         h.responseNotFound(r)
 
     def test_user_can_update_owned_chat(self, user_client):
-        instance = f.OpenAIChatFactory(user=user_client.user, model="gpt-4")
-        r = user_client.patch(
-            self.reverse(kwargs={"pk": instance.id}), dict(model="gpt-3.5-turbo-16k")
-        )
+        instance = f.OpenAIChatFactory(user=user_client.user, model="gpt-4o")
+        r = user_client.patch(self.reverse(kwargs={"pk": instance.id}), dict(model="o1-mini"))
         h.responseOk(r)
         self.check_data_keys(r.data)
         instance.refresh_from_db()
-        assert instance.model == "gpt-3.5-turbo-16k"
+        assert instance.model == "o1-mini"
 
     def test_updating_category_updates_subcategory(self, user_client):
         tettra_page_1 = f.TettraPageFactory()

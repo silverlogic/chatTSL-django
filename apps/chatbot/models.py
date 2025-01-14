@@ -10,17 +10,12 @@ from model_utils.models import TimeStampedModel
 
 
 class OpenAIChat(TimeStampedModel):
-    MODELS = Choices(
-        "gpt-4",
-        "gpt-3.5-turbo-16k",
-        "gpt-3.5-turbo",
-        "gpt-4-0613",
-        "gpt-4-0314",
-    )
+    # See https://platform.openai.com/docs/models#current-model-aliases
+    MODELS = Choices("gpt-4o", "gpt-4o-mini", "chatgpt-4o-latest", "o1", "o1-mini")
 
     user = models.ForeignKey("users.User", related_name="chats", on_delete=models.CASCADE)
     model = models.CharField(
-        null=False, blank=False, max_length=20, choices=MODELS, default=MODELS["gpt-4"]
+        null=False, blank=False, max_length=20, choices=MODELS, default=MODELS["gpt-4o-mini"]
     )
     tettra_page_category_filter = models.ForeignKey(
         "tettra.TettraPageCategory",

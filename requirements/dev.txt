@@ -36,8 +36,8 @@ django-silk==5.0.2
 
 # UML
 django-extensions==3.2.1
-pydot==1.4.2
-pygraphviz==1.10
+pydot==1.4.2;                       sys_platform != 'darwin' # Install fails on macOS local development
+pygraphviz==1.10;                   sys_platform != 'darwin' # Install fails on macOS local development
 
 # Freeze dates in tests
 freezegun==1.2.2

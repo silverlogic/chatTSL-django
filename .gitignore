@@ -12,3 +12,6 @@ __pycache__/
 
 # generated UMLs
 uml-*.*
+
+# Temporary files
+.tmp
