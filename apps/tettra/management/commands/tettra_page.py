@@ -18,6 +18,11 @@ class Command(BaseCommand):
             "--import_json", type=str, help=f"Import {TettraPage._meta.verbose_name_plural.title()}"
         )
         parser.add_argument("--regenerate_embeddings", action="store_true", default=False)
+        parser.add_argument(
+            "--tettra_page",
+            type=int,
+            nargs=1,
+        )
 
     def handle(self, *args, **options):
         try:
@@ -34,7 +39,10 @@ class Command(BaseCommand):
         if file_path := options.get("import_json"):
             self.import_json(Path(file_path))
         if regenerate_embeddings:
-            self.regenerate_embeddings()
+            if tettra_page_id := options.get("tettra_page"):
+                self.regenerate_embeddings(tettra_page_id=tettra_page_id[0])
+            else:
+                self.regenerate_embeddings(tettra_page_id=None)
 
     def import_json(self, file_path: Path):
         content = file_path.read_text()
@@ -100,9 +108,12 @@ class Command(BaseCommand):
                 except BaseException as e:
                     self.stdout.write(self.style.ERROR(str(e)))
 
-    def regenerate_embeddings(self):
+    def regenerate_embeddings(self, tettra_page_id: int | None):
         from ...tasks import generate_vector_embeddings
-
-        for tettra_page in TettraPage.objects.all():
+        
+        queryset = TettraPage.objects.all()
+        if isinstance(tettra_page_id, int):
+            queryset = queryset.filter(id=tettra_page_id)
+        for tettra_page in queryset:
             tettra_page.chunks.all().delete()
             generate_vector_embeddings(tettra_page=tettra_page.id)

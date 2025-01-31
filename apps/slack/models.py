@@ -7,9 +7,15 @@ from model_utils.models import TimeStampedModel
 class SlackInstallation(TimeStampedModel):
     slack_oauth_response = models.JSONField(null=False, blank=False, default=None)
 
+    class Meta:
+        pass
+
 
 class SlackEventCallbackData(TimeStampedModel):
     data = models.JSONField(null=False, blank=False, default=None)
+
+    class Meta:
+        pass
 
 
 class SlackOpenAIChat(TimeStampedModel):

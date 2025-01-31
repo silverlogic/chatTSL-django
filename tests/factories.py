@@ -2,13 +2,13 @@ import json
 
 import factory.faker
 import factory.fuzzy
-import faker
+from faker import Faker
 from faker.providers import internet, lorem
 
 from apps.chatbot.models import OpenAIChat, OpenAIChatMessage
 from apps.tettra.models import TettraPage, TettraPageCategory, TettraPageSubcategory
 
-faker = faker.Faker()
+faker = Faker()
 faker.add_provider(internet)
 faker.add_provider(lorem)
 
