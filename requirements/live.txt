@@ -4,4 +4,4 @@ django-storages==1.13.2
 django-s3-folder-storage==0.5
 
 # error logging using sentry
-sentry-sdk==1.21.0
+sentry-sdk==2.8.0
