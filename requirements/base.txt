@@ -20,7 +20,7 @@ django-picklefield==3.1
 djmail==2.0.0
 
 # Django REST Framework
-djangorestframework==3.14.0
+djangorestframework==3.15.2
 djangorestframework-expander==0.2.3
 drf-extra-fields==3.4.1
 rest-social-auth==8.1.0
