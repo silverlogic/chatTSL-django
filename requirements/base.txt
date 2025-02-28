@@ -61,7 +61,7 @@ pandas==2.2.3
 pyarrow==18.1.0
 tiktoken==0.8.0
 sentence-transformers==3.3.1
-transformers==4.47.1
+transformers==4.48.0
 
 # HTML
 beautifulsoup4==4.12.2
