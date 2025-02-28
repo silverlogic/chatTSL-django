@@ -29,7 +29,7 @@ rest-social-auth==8.1.0
 psycopg2==2.9.5;                    sys_platform != 'darwin' # Install fails on macOS local development
 
 # runs the app server
-gunicorn==20.1.0
+gunicorn==22.0.0
 daphne==4.0.0
 uvicorn[standard]==0.20.0
 
