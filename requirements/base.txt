@@ -58,7 +58,7 @@ djangochannelsrestframework==0.3.0
 pgvector==0.2.5
 numpy==1.26.4
 pandas==2.2.3
-pyarrow==18.1.0
+pyarrow==23.0.1
 tiktoken==0.8.0
 sentence-transformers==3.3.1
 transformers==4.47.1
